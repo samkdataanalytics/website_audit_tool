@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from website_audit_tool.adapters.github_storage import GitHubStorage
 from website_audit_tool.adapters.llm_client import AnthropicClient
 from website_audit_tool.adapters.scraper import PageScraper
 from website_audit_tool.core.models import (
@@ -31,9 +32,15 @@ _SCRAPED_DIR = _DATA_ROOT / "scraped"
 class AuditPageUseCase:
     """Scrape a URL, analyse it with an LLM, and persist the prompt log."""
 
-    def __init__(self, scraper: PageScraper, llm_client: AnthropicClient) -> None:
+    def __init__(
+        self,
+        scraper: PageScraper,
+        llm_client: AnthropicClient,
+        github_storage: GitHubStorage | None = None,
+    ) -> None:
         self._scraper = scraper
         self._llm_client = llm_client
+        self._github = github_storage
 
     def execute(self, url: str) -> AuditResult:
         """Run a full audit for *url*.
@@ -57,24 +64,34 @@ class AuditPageUseCase:
         return AuditResult(
             metrics=metrics,
             analysis=analysis,
-            scraped_data_path=str(scraped_path),
-            prompt_log_path=str(log_path),
+            scraped_data_path=scraped_path,
+            prompt_log_path=log_path,
             llm_interaction=interaction,
         )
 
     # ------------------------------------------------------------------
 
-    def _save_scraped_data(self, url: str, metrics: PageMetrics) -> Path:
-        _SCRAPED_DIR.mkdir(exist_ok=True)
+    def _save_scraped_data(self, url: str, metrics: PageMetrics) -> str:
         domain = urlparse(url).netloc.replace(".", "_")
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        scraped_file = _SCRAPED_DIR / f"{timestamp}_{domain}.json"
+        filename = f"{timestamp}_{domain}.json"
 
         payload = dataclasses.asdict(metrics)
         payload["scraped_at"] = timestamp
-        scraped_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        logger.info("Scraped data saved to %s", scraped_file)
-        return scraped_file
+        content = json.dumps(payload, indent=2)
+
+        if self._github:
+            return self._github.save(
+                path=f"scraped/{filename}",
+                content=content,
+                message=f"scraped: {url} at {timestamp}",
+            )
+
+        path = _SCRAPED_DIR / filename
+        _SCRAPED_DIR.mkdir(exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+        logger.info("Scraped data saved to %s", path)
+        return str(path)
 
     def _save_prompt_log(
         self,
@@ -82,11 +99,10 @@ class AuditPageUseCase:
         metrics: PageMetrics,
         analysis: AnalysisResult,
         interaction: LLMInteraction,
-    ) -> Path:
-        _LOGS_DIR.mkdir(exist_ok=True)
+    ) -> str:
         domain = urlparse(url).netloc.replace(".", "_")
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-        log_file = _LOGS_DIR / f"{timestamp}_{domain}.json"
+        filename = f"{timestamp}_{domain}.json"
 
         payload = {
             "url": url,
@@ -116,6 +132,17 @@ class AuditPageUseCase:
                 "raw_output": interaction.raw_output,
             },
         }
-        log_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-        logger.info("Prompt log saved to %s", log_file)
-        return log_file
+        content = json.dumps(payload, indent=2)
+
+        if self._github:
+            return self._github.save(
+                path=f"logs/{filename}",
+                content=content,
+                message=f"audit log: {url} at {timestamp}",
+            )
+
+        path = _LOGS_DIR / filename
+        _LOGS_DIR.mkdir(exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+        logger.info("Prompt log saved to %s", path)
+        return str(path)

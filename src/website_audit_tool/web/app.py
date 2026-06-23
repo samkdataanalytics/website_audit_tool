@@ -11,6 +11,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+from website_audit_tool.adapters.github_storage import GitHubStorage
 from website_audit_tool.adapters.llm_client import AnthropicClient
 from website_audit_tool.adapters.scraper import PageScraper, ScraperError
 from website_audit_tool.use_cases.audit_page import AuditPageUseCase
@@ -25,6 +26,12 @@ app = FastAPI(title="Website Audit Tool", docs_url=None, redoc_url=None)
 
 _api_key = os.getenv("ANTHROPIC_API_KEY", "")
 _llm: AnthropicClient | None = AnthropicClient(api_key=_api_key) if _api_key else None
+
+_gh_token = os.getenv("GITHUB_TOKEN", "")
+_gh_repo = os.getenv("GITHUB_REPO", "")
+_github: GitHubStorage | None = (
+    GitHubStorage(token=_gh_token, repo=_gh_repo) if _gh_token and _gh_repo else None
+)
 
 
 class AuditRequest(BaseModel):
@@ -51,7 +58,7 @@ def analyse(body: AuditRequest) -> dict[str, object]:
     if not _llm:
         raise HTTPException(status_code=503, detail="LLM not configured — set ANTHROPIC_API_KEY.")
     scraper = PageScraper()
-    use_case = AuditPageUseCase(scraper=scraper, llm_client=_llm)
+    use_case = AuditPageUseCase(scraper=scraper, llm_client=_llm, github_storage=_github)
     try:
         result = use_case.execute(body.url)
     except ScraperError as exc:
@@ -71,7 +78,7 @@ def audit(body: AuditRequest) -> dict[str, object]:
     scraper = PageScraper()
 
     if _llm:
-        use_case = AuditPageUseCase(scraper=scraper, llm_client=_llm)
+        use_case = AuditPageUseCase(scraper=scraper, llm_client=_llm, github_storage=_github)
         try:
             result = use_case.execute(body.url)
         except ScraperError as exc:
