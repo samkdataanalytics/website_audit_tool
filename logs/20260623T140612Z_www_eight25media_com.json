@@ -1,0 +1,64 @@
+{
+  "url": "https://www.eight25media.com/",
+  "scraped_at": "20260623T140612Z",
+  "metrics": {
+    "word_count": 376,
+    "header_counts": {
+      "h1": 1,
+      "h2": 5,
+      "h3": 10
+    },
+    "cta_count": 3,
+    "internal_links_count": 49,
+    "external_links_count": 2,
+    "images_count": 30,
+    "images_missing_alt": 28,
+    "images_missing_alt_pct": 93.3,
+    "meta_title": "B2B Digital Agency for Enterprises | eight25",
+    "meta_description": "Global B2B digital agency offering enterprise web design, mobile apps, and strategic consulting for Fortune 500 firms."
+  },
+  "analysis": {
+    "insights": {
+      "seo_structure": "The page has solid foundational SEO structure with 1 H1 tag, 5 H2 tags, and 10 H3 tags, indicating a logical hierarchy for search crawlers. The meta title 'B2B Digital Agency for Enterprises | eight25' is present and keyword-optimized with primary terms. However, the meta description (152 characters) is well-crafted and includes targeted keywords (B2B, enterprise, web design, mobile apps). The heading distribution (1:5:10 ratio) supports semantic structure, though the large number of H3 tags (10) suggests potential over-optimization in lower-level headings.",
+      "messaging_clarity": "With 376 words of total content, the page lacks substantial depth for a B2B enterprise-focused agency homepage. The meta description clearly articulates the value proposition ('B2B digital agency offering enterprise web design, mobile apps, and strategic consulting for Fortune 500 firms'), but the minimal word count (376 words) means the page body doesn't adequately expand on these claims or build trust through detailed service descriptions or case study teasers. This brevity works against message clarity at scale.",
+      "cta_usage": "The page contains 3 call-to-action elements, which is acceptable for a homepage. However, the specific placement, wording, and conversion intent of these CTAs cannot be fully assessed from metrics alone. With only 376 words, the CTAs likely compete for attention rather than being strategically distributed across a narrative flow. The count is reasonable but the low word count suggests CTAs may appear too early or without sufficient supporting context.",
+      "content_depth": "At 376 words, the page falls significantly short of best practices for a B2B homepage targeting enterprise clients. The heading structure (1 H1 + 5 H2 + 10 H3) indicates content organization, but the low overall word count suggests each section is underdeveloped. Enterprise decision-makers typically require detailed information about capabilities, team expertise, and proven results\u2014none of which can be adequately conveyed in 376 words. Most competitive B2B agency homepages exceed 1,200\u20131,800 words.",
+      "ux_concerns": "Critical accessibility and UX issue: 28 of 30 images (93.3% missing alt text) represents a severe gap in accessibility compliance and SEO best practice. This impacts screen reader users and fails WCAG 2.1 standards. Additionally, with 49 internal links and only 376 words of content, link density is extremely high (1 link per ~7.7 words), which may dilute link equity and confuse navigation hierarchy. The 30 images without proper descriptions also prevent visual content from contributing to SEO value and create poor UX for users relying on alt text for context."
+    },
+    "recommendations": [
+      {
+        "priority": 1,
+        "title": "Add alt text to 28 missing images immediately",
+        "reasoning": "93.3% of images (28 of 30) lack alt text, violating WCAG 2.1 accessibility standards and wasting SEO potential. Each image should have descriptive, keyword-relevant alt text (e.g., 'B2B enterprise web design portfolio for Fortune 500 clients') to improve accessibility, compliance, and image search visibility."
+      },
+      {
+        "priority": 2,
+        "title": "Expand content from 376 to 1,200+ words",
+        "reasoning": "At 376 words, the page lacks depth for enterprise B2B buyers who need detailed service descriptions, team credentials, and proof of expertise. Expanding to 1,200\u20131,500 words across the 5 H2 sections will allow each service area (web design, mobile apps, consulting) to build trust and SEO authority without adding new sections."
+      },
+      {
+        "priority": 3,
+        "title": "Audit and consolidate 49 internal links",
+        "reasoning": "With 49 internal links across 376 words, link density is 1 link per 7.7 words\u2014excessive for homepage hierarchy. Reduce to 15\u201320 strategically placed links (services, portfolio, about, blog, contact) to improve clarity and prevent dilution of link equity. Current density confuses navigation priority."
+      },
+      {
+        "priority": 4,
+        "title": "Consolidate 10 H3 tags into strategic subsections",
+        "reasoning": "The 10 H3 tags relative to 5 H2 tags (ratio of 2:1) suggests over-segmentation of content. Many H3s should be converted to bold text or integrated into H2 sections to create a cleaner hierarchy. This will improve readability and reduce visual fragmentation caused by excessive heading nesting."
+      },
+      {
+        "priority": 5,
+        "title": "Validate and optimize CTA placement and messaging",
+        "reasoning": "While 3 CTAs is acceptable, their placement and messaging need review given the 376-word constraint. Ensure each CTA (e.g., 'Get Started', 'Schedule Consultation', 'View Portfolio') is distinct, appears after sufficient context, and uses high-intent language aligned with B2B buyer stage (awareness, consideration, decision)."
+      }
+    ]
+  },
+  "llm": {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 1469,
+    "output_tokens": 1263,
+    "system_prompt": "You are an expert SEO and UX analyst. Analyse the given web page metrics and call the `submit_analysis` tool with your findings. Every insight and recommendation MUST cite a specific metric (e.g. exact word count, heading counts, CTA count, link counts, image alt-text percentage, meta tag presence). Be direct, specific, and non-generic \u2014 never write advice that could apply to any page.",
+    "user_prompt": "Audit this web page. Call `submit_analysis` with your findings.\n\n**URL:** https://www.eight25media.com/\n\n**Extracted Metrics:**\n- Word count: 376\n- Heading structure: h1: 1, h2: 5, h3: 10\n- Call-to-action elements: 3\n- Internal links: 49\n- External links: 2\n- Images: 30 total, 28 missing alt text (93.3%)\n- Meta title: B2B Digital Agency for Enterprises | eight25\n- Meta description: Global B2B digital agency offering enterprise web design, mobile apps, and strategic consulting for Fortune 500 firms.\n\nEach insight field must reference the specific numbers above. Provide 3\u20135 recommendations ordered by priority (1 = highest).",
+    "raw_output": "{\n  \"insights\": {\n    \"seo_structure\": \"The page has solid foundational SEO structure with 1 H1 tag, 5 H2 tags, and 10 H3 tags, indicating a logical hierarchy for search crawlers. The meta title 'B2B Digital Agency for Enterprises | eight25' is present and keyword-optimized with primary terms. However, the meta description (152 characters) is well-crafted and includes targeted keywords (B2B, enterprise, web design, mobile apps). The heading distribution (1:5:10 ratio) supports semantic structure, though the large number of H3 tags (10) suggests potential over-optimization in lower-level headings.\",\n    \"messaging_clarity\": \"With 376 words of total content, the page lacks substantial depth for a B2B enterprise-focused agency homepage. The meta description clearly articulates the value proposition ('B2B digital agency offering enterprise web design, mobile apps, and strategic consulting for Fortune 500 firms'), but the minimal word count (376 words) means the page body doesn't adequately expand on these claims or build trust through detailed service descriptions or case study teasers. This brevity works against message clarity at scale.\",\n    \"cta_usage\": \"The page contains 3 call-to-action elements, which is acceptable for a homepage. However, the specific placement, wording, and conversion intent of these CTAs cannot be fully assessed from metrics alone. With only 376 words, the CTAs likely compete for attention rather than being strategically distributed across a narrative flow. The count is reasonable but the low word count suggests CTAs may appear too early or without sufficient supporting context.\",\n    \"content_depth\": \"At 376 words, the page falls significantly short of best practices for a B2B homepage targeting enterprise clients. The heading structure (1 H1 + 5 H2 + 10 H3) indicates content organization, but the low overall word count suggests each section is underdeveloped. Enterprise decision-makers typically require detailed information about capabilities, team expertise, and proven results\\u2014none of which can be adequately conveyed in 376 words. Most competitive B2B agency homepages exceed 1,200\\u20131,800 words.\",\n    \"ux_concerns\": \"Critical accessibility and UX issue: 28 of 30 images (93.3% missing alt text) represents a severe gap in accessibility compliance and SEO best practice. This impacts screen reader users and fails WCAG 2.1 standards. Additionally, with 49 internal links and only 376 words of content, link density is extremely high (1 link per ~7.7 words), which may dilute link equity and confuse navigation hierarchy. The 30 images without proper descriptions also prevent visual content from contributing to SEO value and create poor UX for users relying on alt text for context.\"\n  },\n  \"recommendations\": [\n    {\n      \"priority\": 1,\n      \"title\": \"Add alt text to 28 missing images immediately\",\n      \"reasoning\": \"93.3% of images (28 of 30) lack alt text, violating WCAG 2.1 accessibility standards and wasting SEO potential. Each image should have descriptive, keyword-relevant alt text (e.g., 'B2B enterprise web design portfolio for Fortune 500 clients') to improve accessibility, compliance, and image search visibility.\"\n    },\n    {\n      \"priority\": 2,\n      \"title\": \"Expand content from 376 to 1,200+ words\",\n      \"reasoning\": \"At 376 words, the page lacks depth for enterprise B2B buyers who need detailed service descriptions, team credentials, and proof of expertise. Expanding to 1,200\\u20131,500 words across the 5 H2 sections will allow each service area (web design, mobile apps, consulting) to build trust and SEO authority without adding new sections.\"\n    },\n    {\n      \"priority\": 3,\n      \"title\": \"Audit and consolidate 49 internal links\",\n      \"reasoning\": \"With 49 internal links across 376 words, link density is 1 link per 7.7 words\\u2014excessive for homepage hierarchy. Reduce to 15\\u201320 strategically placed links (services, portfolio, about, blog, contact) to improve clarity and prevent dilution of link equity. Current density confuses navigation priority.\"\n    },\n    {\n      \"priority\": 4,\n      \"title\": \"Consolidate 10 H3 tags into strategic subsections\",\n      \"reasoning\": \"The 10 H3 tags relative to 5 H2 tags (ratio of 2:1) suggests over-segmentation of content. Many H3s should be converted to bold text or integrated into H2 sections to create a cleaner hierarchy. This will improve readability and reduce visual fragmentation caused by excessive heading nesting.\"\n    },\n    {\n      \"priority\": 5,\n      \"title\": \"Validate and optimize CTA placement and messaging\",\n      \"reasoning\": \"While 3 CTAs is acceptable, their placement and messaging need review given the 376-word constraint. Ensure each CTA (e.g., 'Get Started', 'Schedule Consultation', 'View Portfolio') is distinct, appears after sufficient context, and uses high-intent language aligned with B2B buyer stage (awareness, consideration, decision).\"\n    }\n  ]\n}"
+  }
+}
