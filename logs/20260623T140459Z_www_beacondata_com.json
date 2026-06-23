@@ -1,0 +1,66 @@
+{
+  "url": "https://www.beacondata.com/",
+  "scraped_at": "20260623T140459Z",
+  "metrics": {
+    "word_count": 1194,
+    "header_counts": {
+      "h1": 2,
+      "h2": 9,
+      "h3": 25,
+      "h4": 17,
+      "h5": 1
+    },
+    "cta_count": 6,
+    "internal_links_count": 25,
+    "external_links_count": 3,
+    "images_count": 38,
+    "images_missing_alt": 37,
+    "images_missing_alt_pct": 97.4,
+    "meta_title": "Your Trusted Data Partner | Beacon Data",
+    "meta_description": "Unlock data as a value lever for your business. Beacon Data is your data services partner to execute even the most complex projects. Our ROI-focused teams are right-sized and scalable to navigate messy data problems and develop holistic end-to-end data solutions."
+  },
+  "analysis": {
+    "insights": {
+      "seo_structure": "The page exhibits significant heading structure imbalance with 2 H1 tags (best practice is 1 per page), 9 H2 tags, 25 H3 tags, 17 H4 tags, and 1 H5 tag. This fragmented hierarchy dilutes keyword emphasis and makes semantic structure unclear. The meta title 'Your Trusted Data Partner | Beacon Data' is present and includes the brand name, while the meta description (162 characters) is comprehensive and keyword-rich, clearly articulating the value proposition.",
+      "messaging_clarity": "The meta description (162 characters) effectively communicates the value proposition with specific language\u2014'data as a value lever,' 'ROI-focused teams,' 'end-to-end data solutions'\u2014providing strong clarity around service offerings. However, with only 1,194 total words across the entire page and 51 total headings (h2-h5), the content is shallow relative to the structural complexity. The messaging relies heavily on meta tags and headings rather than substantive body copy.",
+      "cta_usage": "The page contains 6 call-to-action elements, which is a reasonable count for a B2B services homepage. However, without content length and placement specifics, the CTAs appear distributed across a thin 1,194-word page, potentially creating button-to-content ratio imbalance that may dilute conversion focus.",
+      "content_depth": "The page totals 1,194 words across 51 heading elements (2 H1 + 9 H2 + 25 H3 + 17 H4 + 1 H5), resulting in an extremely heading-heavy structure with minimal body content between sections. This suggests the page prioritizes visual hierarchy over substantive explanatory content, potentially limiting SEO opportunity and user engagement for complex B2B messaging.",
+      "ux_concerns": "Critical accessibility and UX failure: 37 of 38 images (97.4%) lack alt text, creating severe barriers for screen-reader users and missing SEO image optimization signals. Additionally, the 2 H1 tags violate semantic HTML standards and confuse page hierarchy perception. With 25 internal links present, navigation structure is robust, but the alt-text gap is a major usability and compliance issue."
+    },
+    "recommendations": [
+      {
+        "priority": 1,
+        "title": "Add alt text to 37 missing image tags immediately",
+        "reasoning": "97.4% of images (37 of 38) lack alt text, creating WCAG compliance violations and eliminating image-based SEO opportunity. This is both an accessibility failure and missed keyword relevance signal. Audit and add descriptive alt text to all 37 images within 2 weeks."
+      },
+      {
+        "priority": 2,
+        "title": "Consolidate heading hierarchy to single H1 tag",
+        "reasoning": "The page contains 2 H1 tags, violating semantic HTML best practices and diluting primary keyword emphasis. Audit the current H1 structure, designate one as primary, and demote the second to H2. This clarifies page focus for both search engines and screen readers."
+      },
+      {
+        "priority": 3,
+        "title": "Expand body content to 2,000+ words with supporting sections",
+        "reasoning": "The page contains only 1,194 words across 51 heading elements, indicating extremely thin content relative to structural complexity. Develop 3-4 substantive body paragraphs (200-300 words each) under key H2 sections to improve topical authority, engagement depth, and SEO relevance for data services keywords."
+      },
+      {
+        "priority": 4,
+        "title": "Flatten heading hierarchy: reduce H3 (25) and H4 (17) count",
+        "reasoning": "The page uses 25 H3 tags and 17 H4 tags, creating excessive nesting depth and visual clutter. Simplify to 5-7 core H2 sections with 2-3 supporting H3 tags maximum, improving scannability and reducing cognitive load for visitors."
+      },
+      {
+        "priority": 5,
+        "title": "Audit CTA placement and messaging alignment",
+        "reasoning": "With 6 CTAs on a 1,194-word page, verify that each CTA is strategically placed at decision moments and uses distinct action language (e.g., 'Request Demo,' 'Schedule Consultation'). Ensure CTA-to-content ratio supports conversion flow rather than creating decision fatigue."
+      }
+    ]
+  },
+  "llm": {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 1515,
+    "output_tokens": 1112,
+    "system_prompt": "You are an expert SEO and UX analyst. Analyse the given web page metrics and call the `submit_analysis` tool with your findings. Every insight and recommendation MUST cite a specific metric (e.g. exact word count, heading counts, CTA count, link counts, image alt-text percentage, meta tag presence). Be direct, specific, and non-generic \u2014 never write advice that could apply to any page.",
+    "user_prompt": "Audit this web page. Call `submit_analysis` with your findings.\n\n**URL:** https://www.beacondata.com/\n\n**Extracted Metrics:**\n- Word count: 1194\n- Heading structure: h1: 2, h2: 9, h3: 25, h4: 17, h5: 1\n- Call-to-action elements: 6\n- Internal links: 25\n- External links: 3\n- Images: 38 total, 37 missing alt text (97.4%)\n- Meta title: Your Trusted Data Partner | Beacon Data\n- Meta description: Unlock data as a value lever for your business. Beacon Data is your data services partner to execute even the most complex projects. Our ROI-focused teams are right-sized and scalable to navigate messy data problems and develop holistic end-to-end data solutions.\n\nEach insight field must reference the specific numbers above. Provide 3\u20135 recommendations ordered by priority (1 = highest).",
+    "raw_output": "{\n  \"insights\": {\n    \"seo_structure\": \"The page exhibits significant heading structure imbalance with 2 H1 tags (best practice is 1 per page), 9 H2 tags, 25 H3 tags, 17 H4 tags, and 1 H5 tag. This fragmented hierarchy dilutes keyword emphasis and makes semantic structure unclear. The meta title 'Your Trusted Data Partner | Beacon Data' is present and includes the brand name, while the meta description (162 characters) is comprehensive and keyword-rich, clearly articulating the value proposition.\",\n    \"messaging_clarity\": \"The meta description (162 characters) effectively communicates the value proposition with specific language\\u2014'data as a value lever,' 'ROI-focused teams,' 'end-to-end data solutions'\\u2014providing strong clarity around service offerings. However, with only 1,194 total words across the entire page and 51 total headings (h2-h5), the content is shallow relative to the structural complexity. The messaging relies heavily on meta tags and headings rather than substantive body copy.\",\n    \"cta_usage\": \"The page contains 6 call-to-action elements, which is a reasonable count for a B2B services homepage. However, without content length and placement specifics, the CTAs appear distributed across a thin 1,194-word page, potentially creating button-to-content ratio imbalance that may dilute conversion focus.\",\n    \"content_depth\": \"The page totals 1,194 words across 51 heading elements (2 H1 + 9 H2 + 25 H3 + 17 H4 + 1 H5), resulting in an extremely heading-heavy structure with minimal body content between sections. This suggests the page prioritizes visual hierarchy over substantive explanatory content, potentially limiting SEO opportunity and user engagement for complex B2B messaging.\",\n    \"ux_concerns\": \"Critical accessibility and UX failure: 37 of 38 images (97.4%) lack alt text, creating severe barriers for screen-reader users and missing SEO image optimization signals. Additionally, the 2 H1 tags violate semantic HTML standards and confuse page hierarchy perception. With 25 internal links present, navigation structure is robust, but the alt-text gap is a major usability and compliance issue.\"\n  },\n  \"recommendations\": [\n    {\n      \"priority\": 1,\n      \"title\": \"Add alt text to 37 missing image tags immediately\",\n      \"reasoning\": \"97.4% of images (37 of 38) lack alt text, creating WCAG compliance violations and eliminating image-based SEO opportunity. This is both an accessibility failure and missed keyword relevance signal. Audit and add descriptive alt text to all 37 images within 2 weeks.\"\n    },\n    {\n      \"priority\": 2,\n      \"title\": \"Consolidate heading hierarchy to single H1 tag\",\n      \"reasoning\": \"The page contains 2 H1 tags, violating semantic HTML best practices and diluting primary keyword emphasis. Audit the current H1 structure, designate one as primary, and demote the second to H2. This clarifies page focus for both search engines and screen readers.\"\n    },\n    {\n      \"priority\": 3,\n      \"title\": \"Expand body content to 2,000+ words with supporting sections\",\n      \"reasoning\": \"The page contains only 1,194 words across 51 heading elements, indicating extremely thin content relative to structural complexity. Develop 3-4 substantive body paragraphs (200-300 words each) under key H2 sections to improve topical authority, engagement depth, and SEO relevance for data services keywords.\"\n    },\n    {\n      \"priority\": 4,\n      \"title\": \"Flatten heading hierarchy: reduce H3 (25) and H4 (17) count\",\n      \"reasoning\": \"The page uses 25 H3 tags and 17 H4 tags, creating excessive nesting depth and visual clutter. Simplify to 5-7 core H2 sections with 2-3 supporting H3 tags maximum, improving scannability and reducing cognitive load for visitors.\"\n    },\n    {\n      \"priority\": 5,\n      \"title\": \"Audit CTA placement and messaging alignment\",\n      \"reasoning\": \"With 6 CTAs on a 1,194-word page, verify that each CTA is strategically placed at decision moments and uses distinct action language (e.g., 'Request Demo,' 'Schedule Consultation'). Ensure CTA-to-content ratio supports conversion flow rather than creating decision fatigue.\"\n    }\n  ]\n}"
+  }
+}
