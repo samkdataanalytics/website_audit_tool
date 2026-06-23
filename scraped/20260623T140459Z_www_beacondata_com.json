@@ -1,0 +1,49 @@
+{
+  "url": "https://www.beacondata.com/",
+  "word_count": 1194,
+  "header_counts": {
+    "h1": 2,
+    "h2": 9,
+    "h3": 25,
+    "h4": 17,
+    "h5": 1
+  },
+  "cta_count": 6,
+  "internal_links": [
+    "https://www.beacondata.com",
+    "https://www.beacondata.com/services",
+    "https://www.beacondata.com/case-studies",
+    "https://www.beacondata.com/careers",
+    "https://www.beacondata.com/contact",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/case-studies",
+    "https://www.beacondata.com/careers",
+    "https://www.beacondata.com/contact",
+    "https://www.beacondata.com/services",
+    "https://www.beacondata.com/case-studies",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/careers",
+    "https://www.beacondata.com/contact",
+    "https://www.beacondata.com/services",
+    "https://www.beacondata.com/case-studies",
+    "https://www.beacondata.com/schedule",
+    "https://www.beacondata.com/services",
+    "https://www.beacondata.com/case-studies",
+    "https://www.beacondata.com/careers",
+    "https://www.beacondata.com/contact"
+  ],
+  "external_links": [
+    "https://www.wix.com/studio",
+    "https://www.linkedin.com/company/beacon-data-inc/",
+    "https://www.linkedin.com/company/beacon-data-inc/"
+  ],
+  "images_count": 38,
+  "images_missing_alt": 37,
+  "meta_title": "Your Trusted Data Partner | Beacon Data",
+  "meta_description": "Unlock data as a value lever for your business. Beacon Data is your data services partner to execute even the most complex projects. Our ROI-focused teams are right-sized and scalable to navigate messy data problems and develop holistic end-to-end data solutions.",
+  "scraped_at": "20260623T140459Z"
+}
