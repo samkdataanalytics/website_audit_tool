@@ -332,17 +332,35 @@
       show('ai-error');
     }
 
+    function scoreStyle(score) {
+      if (score >= 90) return { bg: 'bg-green-100', text: 'text-green-700' };
+      if (score >= 70) return { bg: 'bg-blue-100',  text: 'text-blue-700'  };
+      if (score >= 40) return { bg: 'bg-amber-100', text: 'text-amber-700' };
+      return               { bg: 'bg-red-100',   text: 'text-red-700'   };
+    }
+
+    const SEVERITY_MAP = {
+      critical:   { bg: 'bg-red-100',   text: 'text-red-700',   label: 'Critical'   },
+      warning:    { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Warning'    },
+      suggestion: { bg: 'bg-green-100', text: 'text-green-700', label: 'Suggestion' },
+    };
+
     function renderInsights(insights) {
       const grid = document.getElementById('insights-grid');
       grid.innerHTML = '';
 
       for (const cfg of INSIGHT_CONFIG) {
-        const c = COLOR_MAP[cfg.color];
+        const c  = COLOR_MAP[cfg.color];
+        const section = insights[cfg.key];
+        const sc = scoreStyle(section.score);
         const card = document.createElement('div');
         card.className = `rounded-2xl border ${c.bg} ${c.border} p-5`;
         card.innerHTML = `
-          <p class="text-xs font-semibold ${c.label} uppercase tracking-wide mb-2">${cfg.label}</p>
-          <p class="text-sm text-slate-700 leading-relaxed">${escHtml(insights[cfg.key])}</p>
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-xs font-semibold ${c.label} uppercase tracking-wide">${cfg.label}</p>
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full ${sc.bg} ${sc.text}">${section.score}/100</span>
+          </div>
+          <p class="text-sm text-slate-700 leading-relaxed">${escHtml(section.analysis)}</p>
         `;
         grid.appendChild(card);
       }
@@ -354,14 +372,18 @@
 
       const sorted = [...recs].sort((a, b) => a.priority - b.priority);
       for (const rec of sorted) {
+        const sv = SEVERITY_MAP[rec.severity] || SEVERITY_MAP.suggestion;
         const item = document.createElement('div');
         item.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex gap-4 items-start';
         item.innerHTML = `
           <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full
                       flex items-center justify-center text-sm font-bold">${rec.priority}</div>
-          <div>
-            <p class="font-semibold text-slate-800 text-sm">${escHtml(rec.title)}</p>
-            <p class="text-sm text-slate-500 mt-1 leading-relaxed">${escHtml(rec.reasoning)}</p>
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <p class="font-semibold text-slate-800 text-sm">${escHtml(rec.title)}</p>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${sv.bg} ${sv.text}">${sv.label}</span>
+            </div>
+            <p class="text-sm text-slate-500 leading-relaxed">${escHtml(rec.reasoning)}</p>
           </div>
         `;
         list.appendChild(item);

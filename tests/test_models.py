@@ -3,9 +3,11 @@
 from website_audit_tool.core.models import (
     AnalysisResult,
     AuditResult,
+    InsightSection,
     InsightSections,
     PageMetrics,
     Recommendation,
+    Severity,
 )
 
 
@@ -25,16 +27,16 @@ def _make_metrics(**kwargs: object) -> PageMetrics:
 def _make_analysis() -> AnalysisResult:
     return AnalysisResult(
         insights=InsightSections(
-            seo_structure="ok",
-            messaging_clarity="ok",
-            cta_usage="ok",
-            content_depth="ok",
-            ux_concerns="ok",
+            seo_structure=InsightSection(analysis="ok", score=75),
+            messaging_clarity=InsightSection(analysis="ok", score=70),
+            cta_usage=InsightSection(analysis="ok", score=65),
+            content_depth=InsightSection(analysis="ok", score=80),
+            ux_concerns=InsightSection(analysis="ok", score=60),
         ),
         recommendations=[
-            Recommendation(priority=1, title="Fix H1", reasoning="0 H1 tags found."),
-            Recommendation(priority=2, title="Add meta desc", reasoning="Meta description not set."),
-            Recommendation(priority=3, title="Improve CTAs", reasoning="Only 3 CTAs detected."),
+            Recommendation(priority=1, severity=Severity.critical, title="Fix H1", reasoning="0 H1 tags found."),
+            Recommendation(priority=2, severity=Severity.warning, title="Add meta desc", reasoning="Meta description not set."),
+            Recommendation(priority=3, severity=Severity.suggestion, title="Improve CTAs", reasoning="Only 3 CTAs detected."),
         ],
     )
 
