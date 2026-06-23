@@ -81,11 +81,14 @@ class AuditPageUseCase:
         content = json.dumps(payload, indent=2)
 
         if self._github:
-            return self._github.save(
-                path=f"scraped/{filename}",
-                content=content,
-                message=f"scraped: {url} at {timestamp}",
-            )
+            try:
+                return self._github.save(
+                    path=f"scraped/{filename}",
+                    content=content,
+                    message=f"scraped: {url} at {timestamp}",
+                )
+            except Exception as exc:
+                logger.error("GitHub storage failed for scraped data: %s", exc)
 
         path = _SCRAPED_DIR / filename
         _SCRAPED_DIR.mkdir(exist_ok=True)
@@ -135,11 +138,14 @@ class AuditPageUseCase:
         content = json.dumps(payload, indent=2)
 
         if self._github:
-            return self._github.save(
-                path=f"logs/{filename}",
-                content=content,
-                message=f"audit log: {url} at {timestamp}",
-            )
+            try:
+                return self._github.save(
+                    path=f"logs/{filename}",
+                    content=content,
+                    message=f"audit log: {url} at {timestamp}",
+                )
+            except Exception as exc:
+                logger.error("GitHub storage failed for prompt log: %s", exc)
 
         path = _LOGS_DIR / filename
         _LOGS_DIR.mkdir(exist_ok=True)
