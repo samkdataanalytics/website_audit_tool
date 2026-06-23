@@ -1,0 +1,84 @@
+{
+  "url": "https://jetwingtravels.com/",
+  "scraped_at": "20260623T164645Z",
+  "metrics": {
+    "word_count": 1706,
+    "header_counts": {
+      "h1": 1,
+      "h2": 8,
+      "h3": 8
+    },
+    "cta_count": 11,
+    "internal_links_count": 92,
+    "external_links_count": 15,
+    "images_count": 477,
+    "images_missing_alt": 28,
+    "images_missing_alt_pct": 5.9,
+    "meta_title": "Jetwing Travels - No.1 Travel Agent in Sri Lanka | Tour Operator in Sri Lanka",
+    "meta_description": "Sri Lanka awaits! Book your unforgettable adventure with Jetwing Travels, the top-rated travel agent in Sri Lanka. Let our expert tour operator team plan your dream vacation today."
+  },
+  "analysis": {
+    "insights": {
+      "seo_structure": {
+        "analysis": "1 H1 tag detected \u2014 correct and optimal for page focus. 8 H2 tags and 8 H3 tags create a well-structured hierarchy that supports both SEO and content scanability. The balanced distribution of subheadings across the page meets best practice standards for a commercial homepage.",
+        "score": 92
+      },
+      "messaging_clarity": {
+        "analysis": "Meta title is 76 characters \u2014 exceeding the optimal 50\u201360 character range by 16 characters. This risks truncation in SERPs on mobile devices. Meta description is 154 characters, falling within the optimal 120\u2013160 range. With 1,706 words, the page exceeds typical landing page benchmarks (300\u2013600 words) but is appropriate for a homepage showcasing multiple service offerings.",
+        "score": 75
+      },
+      "cta_usage": {
+        "analysis": "11 CTAs detected \u2014 significantly exceeding the 1\u20133 standard for optimal conversion focus. This overabundance of call-to-action elements may dilute conversion intent and create decision paralysis for visitors. Consolidate or reorganise CTAs to 3\u20134 primary actions.",
+        "score": 42
+      },
+      "content_depth": {
+        "analysis": "1,706 words is well above the 300\u2013600 benchmark for landing pages and appropriate for a comprehensive travel agency homepage positioning multiple destinations and service categories. The heading structure (1 H1 + 8 H2 + 8 H3) supports content organisation at this length without sacrificing scannability.",
+        "score": 85
+      },
+      "ux_concerns": {
+        "analysis": "28 of 477 images (5.9%) are missing alt text \u2014 an accessibility and SEO issue. While this percentage is relatively low, 28 unoptimised images represent missed opportunities for image search visibility and fail WCAG 2.1 AA accessibility standards. Prioritise adding descriptive alt text to all 28 images. The 92 internal links exceed the healthy 5\u201315 range, but this is typical for a travel operator homepage with many destination and service pages. All 15 external links should be audited for relevance and authority.",
+        "score": 68
+      }
+    },
+    "recommendations": [
+      {
+        "priority": 1,
+        "severity": "critical",
+        "title": "28 images missing alt text \u2014 accessibility and SEO gap",
+        "reasoning": "5.9% of images (28 out of 477) lack alt text. While this is a relatively low percentage, with 477 images on the page, even this small gap represents a significant accessibility failure and SEO weakness. Every image should have descriptive alt text. Prioritize alt-text audits for high-impact images above the fold, then systematically add alt text to all remaining 28 images."
+      },
+      {
+        "priority": 2,
+        "severity": "warning",
+        "title": "11 CTAs exceed standard focus limit for a landing page",
+        "reasoning": "The page has 11 call-to-action elements, well above the 1\u20133 standard for landing pages. This signals scattered conversion intent and dilutes the primary conversion goal. Consolidate CTAs to 2\u20133 primary actions (e.g., 'Book Now' and 'Request Quote') and demote secondary CTAs to footer or utility areas to sharpen page focus and improve conversion clarity."
+      },
+      {
+        "priority": 3,
+        "severity": "suggestion",
+        "title": "Meta title slightly exceeds optimal character length",
+        "reasoning": "The meta title 'Jetwing Travels - No.1 Travel Agent in Sri Lanka | Tour Operator in Sri Lanka' exceeds the optimal 50\u201360 character range. At approximately 77 characters, it will truncate in search results. Consider shortening to: 'Jetwing Travels | Top Travel Agent in Sri Lanka' (approximately 50 characters) to preserve visibility and maintain keyword relevance."
+      },
+      {
+        "priority": 4,
+        "severity": "suggestion",
+        "title": "92 internal links signal potential over-linking and navigation confusion",
+        "reasoning": "With 92 internal links, the page far exceeds the healthy benchmark of 5\u201315 links. This level of internal linking dilutes page authority distribution, creates navigation clutter, and may confuse both users and search engines about primary page hierarchy. Audit and consolidate internal links to essential navigation and contextual references only, targeting 10\u201315 high-quality, purpose-driven links."
+      },
+      {
+        "priority": 5,
+        "severity": "suggestion",
+        "title": "Word count at upper range \u2014 consider structural refinement",
+        "reasoning": "At 1,706 words, the page sits at the upper limit of the 500\u2013900 benchmark for service/product pages and approaches blog-post territory (1,200\u20132,000). For a landing page promoting travel services, this length risks information overload and reduced engagement. Review content hierarchy: identify and move lower-priority sections to dedicated service pages, or restructure with clearer scannable sections to improve user attention and conversion efficiency."
+      }
+    ]
+  },
+  "llm": {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 3755,
+    "output_tokens": 1338,
+    "system_prompt": "You are an expert SEO and UX analyst for a web agency. Analyse the given web page metrics and call the requested tool with your findings. Every insight and recommendation MUST cite a specific metric (e.g. exact word count, heading counts, CTA count, link counts, image alt-text percentage, meta tag presence). Be direct, specific, and non-generic \u2014 never write advice that could apply to any page.\n\nINDUSTRY BENCHMARKS \u2014 use these to contextualise every finding:\n- Word count: landing pages 300\u2013600 words; service/product pages 500\u2013900 words; blog posts 1,200\u20132,000 words\n- H1 tags: exactly 1 is optimal; 0 = critical SEO gap; more than 1 dilutes page focus\n- CTAs: 1\u20133 per page is standard; 0 = conversion gap; more than 5 may signal lack of focus\n- Internal links: 5\u201315 is healthy; fewer than 3 may indicate weak site architecture\n- Image alt text: 100% coverage is the target; any gap is an accessibility and SEO issue\n- Meta description: 120\u2013160 characters is optimal; missing means Google auto-generates it\n- Meta title: 50\u201360 characters is optimal; missing or over 60 chars is an SEO issue\n\nEXAMPLES \u2014 good insight vs bad insight:\n  Good: 'The page has 0 H1 tags \u2014 a critical SEO issue and below the standard of exactly 1. Without an H1, search engines have no primary signal for the page topic. Add a single descriptive H1 above the fold immediately.'\n  Bad:  'You should improve your headings for better SEO.' (no metric cited, applies to any page \u2014 never write this)\n\n  Good: 'With 1 CTA detected, the page sits at the low end of the 1\u20133 standard for a service page. A single CTA limits conversion paths; add a secondary CTA lower on the page.'\n  Bad:  'Add more calls to action to improve conversions.' (no metric cited, generic \u2014 never write this)",
+    "user_prompt": "Audit this web page and call the requested tool with your findings.\n\n**URL:** https://jetwingtravels.com/\n\n**Extracted Metrics:**\n- Word count: 1706\n- Heading structure: h1: 1, h2: 8, h3: 8\n- Call-to-action elements: 11\n- Internal links: 92\n- External links: 15\n- Images: 477 total, 28 missing alt text (5.9%)\n- Meta title: Jetwing Travels - No.1 Travel Agent in Sri Lanka | Tour Operator in Sri Lanka\n- Meta description: Sri Lanka awaits! Book your unforgettable adventure with Jetwing Travels, the top-rated travel agent in Sri Lanka. Let our expert tour operator team plan your dream vacation today.\n\nEvery field must reference the specific numbers above.",
+    "raw_output": "{\n  \"recommendations\": [\n    {\n      \"priority\": 1,\n      \"severity\": \"critical\",\n      \"title\": \"28 images missing alt text \\u2014 accessibility and SEO gap\",\n      \"reasoning\": \"5.9% of images (28 out of 477) lack alt text. While this is a relatively low percentage, with 477 images on the page, even this small gap represents a significant accessibility failure and SEO weakness. Every image should have descriptive alt text. Prioritize alt-text audits for high-impact images above the fold, then systematically add alt text to all remaining 28 images.\"\n    },\n    {\n      \"priority\": 2,\n      \"severity\": \"warning\",\n      \"title\": \"11 CTAs exceed standard focus limit for a landing page\",\n      \"reasoning\": \"The page has 11 call-to-action elements, well above the 1\\u20133 standard for landing pages. This signals scattered conversion intent and dilutes the primary conversion goal. Consolidate CTAs to 2\\u20133 primary actions (e.g., 'Book Now' and 'Request Quote') and demote secondary CTAs to footer or utility areas to sharpen page focus and improve conversion clarity.\"\n    },\n    {\n      \"priority\": 3,\n      \"severity\": \"suggestion\",\n      \"title\": \"Meta title slightly exceeds optimal character length\",\n      \"reasoning\": \"The meta title 'Jetwing Travels - No.1 Travel Agent in Sri Lanka | Tour Operator in Sri Lanka' exceeds the optimal 50\\u201360 character range. At approximately 77 characters, it will truncate in search results. Consider shortening to: 'Jetwing Travels | Top Travel Agent in Sri Lanka' (approximately 50 characters) to preserve visibility and maintain keyword relevance.\"\n    },\n    {\n      \"priority\": 4,\n      \"severity\": \"suggestion\",\n      \"title\": \"92 internal links signal potential over-linking and navigation confusion\",\n      \"reasoning\": \"With 92 internal links, the page far exceeds the healthy benchmark of 5\\u201315 links. This level of internal linking dilutes page authority distribution, creates navigation clutter, and may confuse both users and search engines about primary page hierarchy. Audit and consolidate internal links to essential navigation and contextual references only, targeting 10\\u201315 high-quality, purpose-driven links.\"\n    },\n    {\n      \"priority\": 5,\n      \"severity\": \"suggestion\",\n      \"title\": \"Word count at upper range \\u2014 consider structural refinement\",\n      \"reasoning\": \"At 1,706 words, the page sits at the upper limit of the 500\\u2013900 benchmark for service/product pages and approaches blog-post territory (1,200\\u20132,000). For a landing page promoting travel services, this length risks information overload and reduced engagement. Review content hierarchy: identify and move lower-priority sections to dedicated service pages, or restructure with clearer scannable sections to improve user attention and conversion efficiency.\"\n    }\n  ],\n  \"insights\": {\n    \"seo_structure\": {\n      \"analysis\": \"1 H1 tag detected \\u2014 correct and optimal for page focus. 8 H2 tags and 8 H3 tags create a well-structured hierarchy that supports both SEO and content scanability. The balanced distribution of subheadings across the page meets best practice standards for a commercial homepage.\",\n      \"score\": 92\n    },\n    \"messaging_clarity\": {\n      \"analysis\": \"Meta title is 76 characters \\u2014 exceeding the optimal 50\\u201360 character range by 16 characters. This risks truncation in SERPs on mobile devices. Meta description is 154 characters, falling within the optimal 120\\u2013160 range. With 1,706 words, the page exceeds typical landing page benchmarks (300\\u2013600 words) but is appropriate for a homepage showcasing multiple service offerings.\",\n      \"score\": 75\n    },\n    \"cta_usage\": {\n      \"analysis\": \"11 CTAs detected \\u2014 significantly exceeding the 1\\u20133 standard for optimal conversion focus. This overabundance of call-to-action elements may dilute conversion intent and create decision paralysis for visitors. Consolidate or reorganise CTAs to 3\\u20134 primary actions.\",\n      \"score\": 42\n    },\n    \"content_depth\": {\n      \"analysis\": \"1,706 words is well above the 300\\u2013600 benchmark for landing pages and appropriate for a comprehensive travel agency homepage positioning multiple destinations and service categories. The heading structure (1 H1 + 8 H2 + 8 H3) supports content organisation at this length without sacrificing scannability.\",\n      \"score\": 85\n    },\n    \"ux_concerns\": {\n      \"analysis\": \"28 of 477 images (5.9%) are missing alt text \\u2014 an accessibility and SEO issue. While this percentage is relatively low, 28 unoptimised images represent missed opportunities for image search visibility and fail WCAG 2.1 AA accessibility standards. Prioritise adding descriptive alt text to all 28 images. The 92 internal links exceed the healthy 5\\u201315 range, but this is typical for a travel operator homepage with many destination and service pages. All 15 external links should be audited for relevance and authority.\",\n      \"score\": 68\n    }\n  }\n}"
+  }
+}
