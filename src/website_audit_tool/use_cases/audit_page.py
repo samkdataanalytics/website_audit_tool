@@ -5,6 +5,8 @@ from __future__ import annotations
 import dataclasses
 import json
 import logging
+import os
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
@@ -20,8 +22,10 @@ from website_audit_tool.core.models import (
 
 logger = logging.getLogger(__name__)
 
-_LOGS_DIR = Path(__file__).parents[3] / "logs"
-_SCRAPED_DIR = Path(__file__).parents[3] / "scraped"
+_PROJECT_ROOT = Path(__file__).parents[3]
+_DATA_ROOT = _PROJECT_ROOT if os.access(_PROJECT_ROOT, os.W_OK) else Path(tempfile.gettempdir())
+_LOGS_DIR = _DATA_ROOT / "logs"
+_SCRAPED_DIR = _DATA_ROOT / "scraped"
 
 
 class AuditPageUseCase:
