@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Audit Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-indigo-700">
+    <div class="max-w-4xl mx-auto px-6 py-8">
+      <h1 class="text-3xl font-bold text-white tracking-tight">Website Audit Tool</h1>
+      <p class="mt-1 text-indigo-200 text-sm">Paste any public URL to extract SEO and UX metrics</p>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-6 py-8 space-y-6">
+
+    <!-- Input card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+      <label for="url-input" class="block text-sm font-semibold text-slate-700 mb-3">Page URL</label>
+      <div class="flex gap-3">
+        <input
+          id="url-input"
+          type="url"
+          placeholder="https://example.com"
+          class="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-800
+                 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500
+                 focus:border-transparent transition text-sm"
+          onkeydown="if(event.key==='Enter') runAudit()"
+        />
+        <button
+          id="analyze-btn"
+          onclick="runAudit()"
+          class="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold
+                 px-6 py-2.5 rounded-xl transition shadow-sm text-sm whitespace-nowrap"
+        >
+          Analyze
+        </button>
+      </div>
+    </div>
+
+    <!-- Error banner -->
+    <div id="error-box" class="hidden bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
+      <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+      <p id="error-text" class="text-red-700 text-sm font-medium"></p>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden text-center py-16 text-slate-400">
+      <svg class="animate-spin h-10 w-10 mx-auto mb-4 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      <p class="font-medium text-sm">Scraping page — this may take a moment…</p>
+    </div>
+
+    <!-- Results -->
+    <div id="results" class="hidden space-y-6">
+
+      <!-- Audited URL -->
+      <div class="flex items-center gap-2 text-sm text-slate-500 font-medium">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+        </svg>
+        <span id="audited-url" class="text-indigo-600 truncate"></span>
+      </div>
+
+      <!-- ── Key Metrics ── -->
+      <section>
+        <h2 class="text-base font-semibold text-slate-800 mb-3">Key Metrics</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Word Count</p>
+            <p id="m-words" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">CTAs</p>
+            <p id="m-cta" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Images</p>
+            <p id="m-images" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Internal Links</p>
+            <p id="m-internal" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">External Links</p>
+            <p id="m-external" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <!-- Turns amber when > 0 -->
+          <div id="m-alt-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 transition-colors">
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Missing Alt Text</p>
+            <p id="m-alt-pct" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+            <p id="m-alt-sub" class="text-xs text-slate-400 mt-1"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Heading Structure ── -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+        <h2 class="text-sm font-semibold text-slate-700 mb-4">Heading Structure</h2>
+        <div class="flex gap-10">
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">H1</p>
+            <p id="m-h1" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">H2</p>
+            <p id="m-h2" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+          <div>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">H3</p>
+            <p id="m-h3" class="text-3xl font-bold text-slate-800 mt-1">—</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Meta Information ── -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+        <h2 class="text-sm font-semibold text-slate-700">Meta Information</h2>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Meta Title</p>
+          <p id="m-meta-title" class="text-sm text-slate-800 bg-slate-50 rounded-lg px-3 py-2 font-mono break-all"></p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Meta Description</p>
+          <p id="m-meta-desc" class="text-sm text-slate-800 bg-slate-50 rounded-lg px-3 py-2 font-mono break-all"></p>
+        </div>
+      </div>
+
+      <!-- ── AI-Generated Analysis separator ── -->
+      <div id="ai-separator" class="hidden flex items-center gap-3 my-2">
+        <div class="flex-1 h-px bg-slate-200"></div>
+        <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+          — AI-Generated Analysis —
+        </span>
+        <div class="flex-1 h-px bg-slate-200"></div>
+      </div>
+
+      <!-- ── AI Insights (5 cards) ── -->
+      <section id="insights-section" class="hidden space-y-4">
+        <div class="flex items-center gap-3">
+          <h2 class="text-base font-semibold text-slate-800">AI Insights</h2>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
+                       bg-violet-100 text-violet-700 border border-violet-200">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            AI Generated
+          </span>
+        </div>
+        <div id="ai-loading" class="py-8 text-center text-slate-400">
+          <svg class="animate-spin h-7 w-7 mx-auto mb-3 text-violet-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          <p class="text-sm font-medium">Generating AI analysis…</p>
+        </div>
+        <div id="ai-error" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <p id="ai-error-text" class="text-amber-800 text-sm font-medium"></p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="insights-grid"></div>
+      </section>
+
+      <!-- ── Recommendations ── -->
+      <section id="recs-section" class="hidden space-y-3">
+        <div class="flex items-center gap-3">
+          <h2 class="text-base font-semibold text-slate-800">Recommendations</h2>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
+                       bg-violet-100 text-violet-700 border border-violet-200">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            AI Generated
+          </span>
+        </div>
+        <div id="recs-list" class="space-y-3"></div>
+      </section>
+
+    </div><!-- /results -->
+  </main>
+
+  <script>
+    const INSIGHT_CONFIG = [
+      { key: 'seo_structure',     label: 'SEO Structure',     color: 'indigo' },
+      { key: 'messaging_clarity', label: 'Messaging Clarity', color: 'violet' },
+      { key: 'cta_usage',         label: 'CTA Usage',         color: 'sky'    },
+      { key: 'content_depth',     label: 'Content Depth',     color: 'teal'   },
+      { key: 'ux_concerns',       label: 'UX Concerns',       color: 'amber'  },
+    ];
+
+    // Tailwind classes can't be dynamically constructed — map them upfront
+    const COLOR_MAP = {
+      indigo: { bg: 'bg-indigo-50', border: 'border-indigo-100', label: 'text-indigo-500' },
+      violet: { bg: 'bg-violet-50', border: 'border-violet-100', label: 'text-violet-500' },
+      sky:    { bg: 'bg-sky-50',    border: 'border-sky-100',    label: 'text-sky-500'    },
+      teal:   { bg: 'bg-teal-50',   border: 'border-teal-100',   label: 'text-teal-500'   },
+      amber:  { bg: 'bg-amber-50',  border: 'border-amber-100',  label: 'text-amber-600'  },
+    };
+
+    async function runAudit() {
+      const urlInput = document.getElementById('url-input');
+      const url = urlInput.value.trim();
+      if (!url) { urlInput.focus(); return; }
+
+      // Reset all state
+      hide('error-box');
+      hide('results');
+      hide('ai-separator');
+      hide('insights-section');
+      hide('recs-section');
+      hide('ai-error');
+      document.getElementById('insights-grid').innerHTML = '';
+      document.getElementById('recs-list').innerHTML = '';
+      show('ai-loading');
+      show('loading');
+      setButtonState(true);
+
+      // Fire both requests simultaneously
+      const scrapePromise = fetch('/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      const analysePromise = fetch('/analyse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      // /scrape gates showing results
+      let scrapeResp, scrapeData;
+      try {
+        scrapeResp = await scrapePromise;
+        scrapeData = await scrapeResp.json();
+      } catch (_) {
+        hide('loading');
+        setButtonState(false);
+        showError('Network error scraping page — check your connection and try again.');
+        return;
+      }
+
+      if (!scrapeResp.ok) {
+        hide('loading');
+        setButtonState(false);
+        showError(scrapeData.detail || 'Could not scrape that URL.');
+        return;
+      }
+
+      // Metrics ready — show immediately
+      hide('loading');
+      setButtonState(false);
+      renderMetrics(scrapeData);
+
+      // Wait for AI analysis to settle
+      let analyseResult;
+      try {
+        const analyseResp = await analysePromise;
+        const analyseData = await analyseResp.json();
+        if (!analyseResp.ok) {
+          analyseResult = { ok: false, detail: analyseData.detail || 'AI analysis failed.' };
+        } else {
+          analyseResult = { ok: true, data: analyseData };
+        }
+      } catch (_) {
+        analyseResult = { ok: false, detail: 'Network error reaching AI service.' };
+      }
+
+      hide('ai-loading');
+
+      if (analyseResult.ok) {
+        renderInsights(analyseResult.data.analysis.insights);
+        renderRecommendations(analyseResult.data.analysis.recommendations);
+      } else {
+        showAiError(analyseResult.detail);
+      }
+    }
+
+    function renderMetrics(data) {
+      const m = data.metrics;
+
+      document.getElementById('audited-url').textContent = data.url;
+
+      document.getElementById('m-words').textContent    = m.word_count.toLocaleString();
+      document.getElementById('m-cta').textContent      = m.cta_count;
+      document.getElementById('m-images').textContent   = m.images_count;
+      document.getElementById('m-internal').textContent = m.internal_links;
+      document.getElementById('m-external').textContent = m.external_links;
+
+      document.getElementById('m-alt-pct').textContent = m.images_missing_alt_pct + '%';
+      document.getElementById('m-alt-sub').textContent =
+        `${m.images_missing_alt} of ${m.images_count} image${m.images_count !== 1 ? 's' : ''}`;
+      const altCard = document.getElementById('m-alt-card');
+      const hasAltIssue = m.images_missing_alt_pct > 0;
+      altCard.classList.toggle('border-amber-300', hasAltIssue);
+      altCard.classList.toggle('bg-amber-50',      hasAltIssue);
+      altCard.classList.toggle('border-slate-200', !hasAltIssue);
+      altCard.classList.toggle('bg-white',         !hasAltIssue);
+
+      document.getElementById('m-h1').textContent = m.header_counts.h1 ?? 0;
+      document.getElementById('m-h2').textContent = m.header_counts.h2 ?? 0;
+      document.getElementById('m-h3').textContent = m.header_counts.h3 ?? 0;
+
+      document.getElementById('m-meta-title').textContent = m.meta_title || '(not set)';
+      document.getElementById('m-meta-desc').textContent  = m.meta_description || '(not set)';
+
+      show('results');
+      show('ai-separator');
+      show('insights-section');
+    }
+
+    // Legacy — still used by the existing /audit endpoint
+    function renderResults(data) {
+      renderMetrics(data);
+      if (data.analysis) {
+        hide('ai-loading');
+        renderInsights(data.analysis.insights);
+        renderRecommendations(data.analysis.recommendations);
+      }
+    }
+
+    function showAiError(msg) {
+      document.getElementById('ai-error-text').textContent = msg;
+      show('ai-error');
+    }
+
+    function renderInsights(insights) {
+      const grid = document.getElementById('insights-grid');
+      grid.innerHTML = '';
+
+      for (const cfg of INSIGHT_CONFIG) {
+        const c = COLOR_MAP[cfg.color];
+        const card = document.createElement('div');
+        card.className = `rounded-2xl border ${c.bg} ${c.border} p-5`;
+        card.innerHTML = `
+          <p class="text-xs font-semibold ${c.label} uppercase tracking-wide mb-2">${cfg.label}</p>
+          <p class="text-sm text-slate-700 leading-relaxed">${escHtml(insights[cfg.key])}</p>
+        `;
+        grid.appendChild(card);
+      }
+    }
+
+    function renderRecommendations(recs) {
+      const list = document.getElementById('recs-list');
+      list.innerHTML = '';
+
+      const sorted = [...recs].sort((a, b) => a.priority - b.priority);
+      for (const rec of sorted) {
+        const item = document.createElement('div');
+        item.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex gap-4 items-start';
+        item.innerHTML = `
+          <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full
+                      flex items-center justify-center text-sm font-bold">${rec.priority}</div>
+          <div>
+            <p class="font-semibold text-slate-800 text-sm">${escHtml(rec.title)}</p>
+            <p class="text-sm text-slate-500 mt-1 leading-relaxed">${escHtml(rec.reasoning)}</p>
+          </div>
+        `;
+        list.appendChild(item);
+      }
+
+      show('recs-section');
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showError(msg) {
+      document.getElementById('error-text').textContent = msg;
+      show('error-box');
+    }
+
+    function show(id) { document.getElementById(id).classList.remove('hidden'); }
+    function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function setButtonState(disabled) {
+      const btn = document.getElementById('analyze-btn');
+      btn.disabled = disabled;
+      btn.textContent = disabled ? 'Analyzing…' : 'Analyze';
+      btn.classList.toggle('opacity-60', disabled);
+      btn.classList.toggle('cursor-not-allowed', disabled);
+    }
+  </script>
+
+</body>
+</html>

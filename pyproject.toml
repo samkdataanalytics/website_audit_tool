@@ -1,0 +1,31 @@
+[project]
+name = "website-audit-tool"
+version = "0.1.0"
+description = "AI-powered website audit tool using LLM-generated SEO/UX insights"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.25.0",
+    "beautifulsoup4>=4.12.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.20.0",
+]
+
+[project.scripts]
+audit = "website_audit_tool.main:main"
+audit-web = "website_audit_tool.web.app:start"
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
