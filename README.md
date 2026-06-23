@@ -115,20 +115,22 @@ The project follows **Clean Architecture** — each layer knows only about the l
       │   │  Images: 14 total, 2 missing alt text (14.3%)        │
       │   │  Meta title: "…"   Meta description: "…"             │
       │   └──────────────────────────────────────────────────────┘
-      │   ┌─ Tool schema (AnalysisResult as JSON Schema) ────────┐
-      │   │  tool_choice: { "type": "tool",                      │
-      │   │                 "name": "submit_analysis" }          │
-      │   │  Forces structured JSON — no free-text response      │
-      │   └──────────────────────────────────────────────────────┘
+      │
+      ├─── Call 1: submit_recommendations ───────────────────────┐
+      │         schema: _inline_refs(_RecsResult.model_json_schema())
+      │         tool_blocks[0].input → Pydantic → list[Recommendation]
+      │
+      └─── Call 2: submit_insights ──────────────────────────────┐
+               schema: _FlatInsights.model_json_schema()
+               (flat — 10 top-level fields, no nesting)
+               tool_blocks[0].input → Pydantic → assembled InsightSections
       │
       ▼
-  Raw JSON from Claude  (tool_blocks[0].input)
-      │
-      ├──► Pydantic validates → AnalysisResult
+  AnalysisResult assembled from both tool outputs
       │
       ▼
-  LLMInteraction  ◄── full audit trail captured here
-      │   model, tokens, system_prompt, user_prompt, raw_output
+  LLMInteraction  ◄── audit trail: prompts, summed token counts, serialised result
+      │   model, tokens (recs + insights), system_prompt, user_prompt, raw_output
       │
       ▼
   saved to  logs/<timestamp>_<domain>.json
@@ -203,7 +205,7 @@ Full LLM audit trail — everything the model received and returned.
 }
 ```
 
-The `llm` block is the complete AI interaction record — what went in, what came out, before any Python processing.
+The `llm` block is the complete audit trail — the prompts sent, the token counts (summed across both tool calls), and the assembled `AnalysisResult` serialised as JSON.
 
 ---
 
@@ -255,34 +257,44 @@ website_audit_tool/
 The LLM is never asked for free text. It is forced to call a tool with a strict JSON schema.
 
 ```
-  AnthropicClient
+  AnthropicClient  (two focused tool calls — same system + user prompt each time)
        │
-       │  tool_choice = { "type": "tool", "name": "submit_analysis" }
-       │  input_schema = _inline_refs(AnalysisResult.model_json_schema())
-       │                 ↳ all $ref/$defs resolved — flat, self-contained schema
+       ├── Call 1 ── tool_choice = { "type": "tool", "name": "submit_recommendations" }
+       │              input_schema = _inline_refs(_RecsResult.model_json_schema())
+       │                             ↳ $defs/$ref resolved — flat, self-contained schema
+       │              ▼
+       │          _RecsResult
+       │              └── recommendations: list[Recommendation]  (3–5 items)
+       │                      ├── priority   int   (1 = highest)
+       │                      ├── severity   str   ("critical" | "warning" | "suggestion")
+       │                      ├── title      str   (≤ 10 words)
+       │                      └── reasoning  str   (must cite at least one metric number)
        │
-       ▼
-  AnalysisResult  (Pydantic model → JSON schema → tool input_schema)
-       │
-       ├── recommendations: list[Recommendation]  (3–5 items, generated FIRST)
-       │       ├── priority   int   (1 = highest)
-       │       ├── severity   str   ("critical" | "warning" | "suggestion")
-       │       ├── title      str   (≤ 10 words)
-       │       └── reasoning  str   (must cite at least one metric number)
-       │
-       └── insights: InsightSections
-               ├── seo_structure      InsightSection  (analysis: str, score: 0–100)
-               ├── messaging_clarity  InsightSection  (analysis: str, score: 0–100)
-               ├── cta_usage          InsightSection  (analysis: str, score: 0–100)
-               ├── content_depth      InsightSection  (analysis: str, score: 0–100)
-               └── ux_concerns        InsightSection  (analysis: str, score: 0–100)
+       └── Call 2 ── tool_choice = { "type": "tool", "name": "submit_insights" }
+                      input_schema = _FlatInsights.model_json_schema()
+                                     ↳ already flat — no $defs generated, no _inline_refs needed
+                      ▼
+                  _FlatInsights  (10 top-level fields — no nesting)
+                      ├── seo_structure            str   (analysis — must cite exact metrics)
+                      ├── seo_structure_score      int   (0–100)
+                      ├── messaging_clarity        str
+                      ├── messaging_clarity_score  int   (0–100)
+                      ├── cta_usage                str
+                      ├── cta_usage_score          int   (0–100)
+                      ├── content_depth            str
+                      ├── content_depth_score      int   (0–100)
+                      ├── ux_concerns              str
+                      └── ux_concerns_score        int   (0–100)
+
+  _FlatInsights output is assembled post-call into InsightSections / InsightSection objects.
+  Token counts from both calls are summed into LLMInteraction.
 ```
 
 **Key design details:**
 
 - Each `InsightSection.score` uses the same 0–100 scale (0–39 poor, 40–69 fair, 70–89 good, 90–100 excellent), letting the UI render an at-a-glance verdict alongside the text analysis.
-- `recommendations` is ordered first in the schema so the model generates it before the larger `insights` object — preventing early truncation on smaller models.
-- `_inline_refs()` resolves all Pydantic-generated `$defs`/`$ref` cross-references before sending the schema to the API, ensuring the model sees every field inline with no indirection.
+- Two focused tool calls keep each schema small enough for Haiku to complete without truncation — recommendations in call 1, all insight text and scores in call 2.
+- `_inline_refs()` is applied only to `_RecsResult`'s schema, which contains `$defs`/`$ref` cross-references from the nested `Recommendation` model. `_FlatInsights` has no nested models so Pydantic generates no `$defs` — `_inline_refs()` is not needed for call 2.
 - Each field `description` in the Pydantic model doubles as a prompt instruction — the schema enforces structure and guides output quality simultaneously.
 
 ---
@@ -301,7 +313,8 @@ python -m venv .venv
 source .venv/bin/activate
 
 # 2. Install dependencies
-pip install -e .
+pip install -r requirements.txt   # includes pydantic, which pyproject.toml omits
+pip install -e .                  # installs the package and registers the `audit` CLI
 
 # 3. Set environment variables
 cp .env.example .env
@@ -335,7 +348,7 @@ mypy src/
        ▼
   Vercel  (auto-deploy on push)
        │
-       ├── Reads pyproject.toml  →  Python 3.12, installs deps
+       ├── Reads pyproject.toml  →  Python 3.11, installs deps
        ├── Detects api/index.py  →  deploys as serverless function
        ├── vercel.json           →  routes all requests to api/index.py
        │                            maxDuration: 60s
@@ -386,10 +399,10 @@ All POST endpoints accept `{ "url": "https://..." }`.
 | Decision | Rationale |
 |---|---|
 | Clean Architecture layers | Scraper (deterministic, cheap) and LLM (probabilistic, costly) are fully decoupled. Each can be swapped or tested independently. |
-| Tool-use forced output | `tool_choice: { "type": "tool", "name": "submit_analysis" }` makes unstructured LLM responses architecturally impossible. Pydantic validates the result. |
+| Tool-use forced output | Two `tool_choice: { "type": "tool" }` calls (`submit_recommendations` then `submit_insights`) make unstructured LLM responses architecturally impossible. Pydantic validates each result. |
 | Pydantic schema as prompt | Field `description` strings serve double duty — they define the JSON schema sent to the model AND instruct the model to cite specific metric numbers. |
-| `_inline_refs()` schema flattening | Pydantic generates schemas with `$defs`/`$ref` cross-references. Haiku reliably omits later fields when navigating nested refs. Inlining all refs produces a flat schema the model follows completely. |
-| `recommendations` field ordered first | In tool schemas, models generate fields in declaration order. Placing `recommendations` before `insights` ensures the shorter field is generated before the model's attention is consumed by five long insight texts. |
+| `_inline_refs()` schema flattening | `_RecsResult`'s schema contains Pydantic-generated `$defs`/`$ref` cross-references. `_inline_refs()` resolves these before sending so Haiku sees every field inline. `_FlatInsights` uses no nested models so no `$defs` are generated and `_inline_refs()` is not needed. |
+| Two focused tool calls | Splitting recommendations and insights into separate calls keeps each schema small enough for Haiku to complete reliably. A single large schema caused truncation of later fields; two focused calls eliminate that failure mode. |
 | Per-category scores (0–100) | Each `InsightSection` carries a `score` alongside its `analysis` text. Scores give an at-a-glance signal without requiring the reader to parse every paragraph. The scale (0–39 poor → 90–100 excellent) is defined in the field description so the model applies it consistently. |
 | Severity tiers on recommendations | `critical` / `warning` / `suggestion` lets an agency immediately triage blockers from nice-to-haves without reading all reasoning text. The enum is enforced by the tool schema — the model cannot return an invalid value. |
 | Industry benchmarks in system prompt | Word count ranges, H1 rules, CTA and link counts, meta tag length standards are injected into the system prompt so insights say "below the 500–900 word standard" rather than just citing the raw number. |
