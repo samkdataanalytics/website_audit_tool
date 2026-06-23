@@ -21,7 +21,6 @@ class LLMInteraction:
     system_prompt: str
     user_prompt: str
     raw_output: str          # JSON-serialised AnalysisResult
-    thinking: str | None = None
     input_tokens: int = 0
     output_tokens: int = 0
 

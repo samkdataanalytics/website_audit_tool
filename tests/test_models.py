@@ -68,6 +68,7 @@ def test_audit_result_scraped_at_is_set() -> None:
         metrics=metrics,
         analysis=_make_analysis(),
         prompt_log_path="/logs/x.json",
+        scraped_data_path="/scraped/x.json",
     )
     assert result.scraped_at is not None
 

@@ -109,7 +109,6 @@ class AuditPageUseCase:
                 "output_tokens": interaction.output_tokens,
                 "system_prompt": interaction.system_prompt,
                 "user_prompt": interaction.user_prompt,
-                "thinking": interaction.thinking,
                 "raw_output": interaction.raw_output,
             },
         }
