@@ -36,6 +36,36 @@ def index() -> FileResponse:
     return FileResponse(_STATIC_DIR / "index.html")
 
 
+@app.post("/scrape")
+def scrape(body: AuditRequest) -> dict[str, object]:
+    scraper = PageScraper()
+    try:
+        metrics = scraper.scrape(body.url)
+    except ScraperError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    return {"url": metrics.url, "metrics": _metrics_dict(metrics)}
+
+
+@app.post("/analyse")
+def analyse(body: AuditRequest) -> dict[str, object]:
+    if not _llm:
+        raise HTTPException(status_code=503, detail="LLM not configured — set ANTHROPIC_API_KEY.")
+    scraper = PageScraper()
+    use_case = AuditPageUseCase(scraper=scraper, llm_client=_llm)
+    try:
+        result = use_case.execute(body.url)
+    except ScraperError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    except Exception as exc:
+        logger.warning("LLM analysis failed: %s", exc)
+        raise HTTPException(status_code=502, detail="AI analysis failed — try again later.")
+    return {
+        "analysis": result.analysis.model_dump(),
+        "scraped_data_path": result.scraped_data_path,
+        "prompt_log_path": result.prompt_log_path,
+    }
+
+
 @app.post("/audit")
 def audit(body: AuditRequest) -> dict[str, object]:
     scraper = PageScraper()

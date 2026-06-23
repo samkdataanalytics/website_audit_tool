@@ -87,7 +87,8 @@ def main() -> None:
         print(f"\n{rec.priority}. {rec.title}")
         print(f"   {rec.reasoning}")
 
-    print(f"\nLog saved to: {result.prompt_log_path}")
+    print(f"\nScraped data : {result.scraped_data_path}")
+    print(f"Prompt log   : {result.prompt_log_path}")
 
 
 if __name__ == "__main__":

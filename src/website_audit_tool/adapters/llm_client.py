@@ -73,7 +73,6 @@ class AnthropicClient:
         with self._client.messages.stream(
             model=self._model,
             max_tokens=_MAX_TOKENS,
-            thinking={"type": "adaptive"},
             system=_SYSTEM_PROMPT,
             tools=tools,
             tool_choice={"type": "tool", "name": "submit_analysis"},
@@ -81,7 +80,6 @@ class AnthropicClient:
         ) as stream:
             response = stream.get_final_message()
 
-        thinking_blocks = [b for b in response.content if b.type == "thinking"]
         tool_blocks = [b for b in response.content if b.type == "tool_use"]
 
         if not tool_blocks:
@@ -95,7 +93,6 @@ class AnthropicClient:
             system_prompt=_SYSTEM_PROMPT,
             user_prompt=user_prompt,
             raw_output=json.dumps(tool_blocks[0].input, indent=2),
-            thinking=thinking_blocks[0].thinking if thinking_blocks else None,
             input_tokens=response.usage.input_tokens,
             output_tokens=response.usage.output_tokens,
         )

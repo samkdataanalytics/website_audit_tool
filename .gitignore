@@ -21,6 +21,9 @@ out/
 # Logs (keep the logs/ directory itself via .gitkeep, ignore its contents)
 logs/*.json
 logs/*.log
+
+# Scraped data (keep the scraped/ directory itself via .gitkeep, ignore its contents)
+scraped/*.json
 *.log
 npm-debug.log*
 yarn-debug.log*

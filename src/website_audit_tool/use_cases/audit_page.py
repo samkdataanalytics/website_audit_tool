@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -20,6 +21,7 @@ from website_audit_tool.core.models import (
 logger = logging.getLogger(__name__)
 
 _LOGS_DIR = Path(__file__).parents[3] / "logs"
+_SCRAPED_DIR = Path(__file__).parents[3] / "scraped"
 
 
 class AuditPageUseCase:
@@ -45,16 +47,30 @@ class AuditPageUseCase:
         logger.info("Analysing metrics with LLM")
         analysis, interaction = self._llm_client.analyze(metrics)
 
+        scraped_path = self._save_scraped_data(url, metrics)
         log_path = self._save_prompt_log(url, metrics, analysis, interaction)
 
         return AuditResult(
             metrics=metrics,
             analysis=analysis,
+            scraped_data_path=str(scraped_path),
             prompt_log_path=str(log_path),
             llm_interaction=interaction,
         )
 
     # ------------------------------------------------------------------
+
+    def _save_scraped_data(self, url: str, metrics: PageMetrics) -> Path:
+        _SCRAPED_DIR.mkdir(exist_ok=True)
+        domain = urlparse(url).netloc.replace(".", "_")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        scraped_file = _SCRAPED_DIR / f"{timestamp}_{domain}.json"
+
+        payload = dataclasses.asdict(metrics)
+        payload["scraped_at"] = timestamp
+        scraped_file.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        logger.info("Scraped data saved to %s", scraped_file)
+        return scraped_file
 
     def _save_prompt_log(
         self,
@@ -65,7 +81,7 @@ class AuditPageUseCase:
     ) -> Path:
         _LOGS_DIR.mkdir(exist_ok=True)
         domain = urlparse(url).netloc.replace(".", "_")
-        timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         log_file = _LOGS_DIR / f"{timestamp}_{domain}.json"
 
         payload = {

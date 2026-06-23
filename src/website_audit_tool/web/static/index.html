@@ -56,7 +56,7 @@
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
       </svg>
-      <p class="font-medium text-sm">Scraping and analysing — this may take a moment…</p>
+      <p class="font-medium text-sm">Scraping page — this may take a moment…</p>
     </div>
 
     <!-- Results -->
@@ -136,20 +136,53 @@
         </div>
       </div>
 
+      <!-- ── AI-Generated Analysis separator ── -->
+      <div id="ai-separator" class="hidden flex items-center gap-3 my-2">
+        <div class="flex-1 h-px bg-slate-200"></div>
+        <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest whitespace-nowrap">
+          — AI-Generated Analysis —
+        </span>
+        <div class="flex-1 h-px bg-slate-200"></div>
+      </div>
+
       <!-- ── AI Insights (5 cards) ── -->
       <section id="insights-section" class="hidden space-y-4">
-        <h2 class="text-base font-semibold text-slate-800">AI Insights</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="insights-grid">
-          <!-- populated by JS -->
+        <div class="flex items-center gap-3">
+          <h2 class="text-base font-semibold text-slate-800">AI Insights</h2>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
+                       bg-violet-100 text-violet-700 border border-violet-200">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            AI Generated
+          </span>
         </div>
+        <div id="ai-loading" class="py-8 text-center text-slate-400">
+          <svg class="animate-spin h-7 w-7 mx-auto mb-3 text-violet-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+          <p class="text-sm font-medium">Generating AI analysis…</p>
+        </div>
+        <div id="ai-error" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <p id="ai-error-text" class="text-amber-800 text-sm font-medium"></p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="insights-grid"></div>
       </section>
 
       <!-- ── Recommendations ── -->
       <section id="recs-section" class="hidden space-y-3">
-        <h2 class="text-base font-semibold text-slate-800">Recommendations</h2>
-        <div id="recs-list" class="space-y-3">
-          <!-- populated by JS -->
+        <div class="flex items-center gap-3">
+          <h2 class="text-base font-semibold text-slate-800">Recommendations</h2>
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
+                       bg-violet-100 text-violet-700 border border-violet-200">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            AI Generated
+          </span>
         </div>
+        <div id="recs-list" class="space-y-3"></div>
       </section>
 
     </div><!-- /results -->
@@ -178,46 +211,90 @@
       const url = urlInput.value.trim();
       if (!url) { urlInput.focus(); return; }
 
+      // Reset all state
       hide('error-box');
       hide('results');
+      hide('ai-separator');
+      hide('insights-section');
+      hide('recs-section');
+      hide('ai-error');
+      document.getElementById('insights-grid').innerHTML = '';
+      document.getElementById('recs-list').innerHTML = '';
+      show('ai-loading');
       show('loading');
       setButtonState(true);
 
+      // Fire both requests simultaneously
+      const scrapePromise = fetch('/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+      const analysePromise = fetch('/analyse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      });
+
+      // /scrape gates showing results
+      let scrapeResp, scrapeData;
       try {
-        const resp = await fetch('/audit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url }),
-        });
-        const data = await resp.json();
-
-        if (!resp.ok) {
-          showError(data.detail || 'An unexpected error occurred.');
-          return;
-        }
-
-        renderResults(data);
+        scrapeResp = await scrapePromise;
+        scrapeData = await scrapeResp.json();
       } catch (_) {
-        showError('Network error — check your connection and try again.');
-      } finally {
         hide('loading');
         setButtonState(false);
+        showError('Network error scraping page — check your connection and try again.');
+        return;
+      }
+
+      if (!scrapeResp.ok) {
+        hide('loading');
+        setButtonState(false);
+        showError(scrapeData.detail || 'Could not scrape that URL.');
+        return;
+      }
+
+      // Metrics ready — show immediately
+      hide('loading');
+      setButtonState(false);
+      renderMetrics(scrapeData);
+
+      // Wait for AI analysis to settle
+      let analyseResult;
+      try {
+        const analyseResp = await analysePromise;
+        const analyseData = await analyseResp.json();
+        if (!analyseResp.ok) {
+          analyseResult = { ok: false, detail: analyseData.detail || 'AI analysis failed.' };
+        } else {
+          analyseResult = { ok: true, data: analyseData };
+        }
+      } catch (_) {
+        analyseResult = { ok: false, detail: 'Network error reaching AI service.' };
+      }
+
+      hide('ai-loading');
+
+      if (analyseResult.ok) {
+        renderInsights(analyseResult.data.analysis.insights);
+        renderRecommendations(analyseResult.data.analysis.recommendations);
+      } else {
+        showAiError(analyseResult.detail);
       }
     }
 
-    function renderResults(data) {
+    function renderMetrics(data) {
       const m = data.metrics;
 
       document.getElementById('audited-url').textContent = data.url;
 
-      // Stat cards
       document.getElementById('m-words').textContent    = m.word_count.toLocaleString();
       document.getElementById('m-cta').textContent      = m.cta_count;
       document.getElementById('m-images').textContent   = m.images_count;
       document.getElementById('m-internal').textContent = m.internal_links;
       document.getElementById('m-external').textContent = m.external_links;
 
-      // Missing alt — amber highlight
       document.getElementById('m-alt-pct').textContent = m.images_missing_alt_pct + '%';
       document.getElementById('m-alt-sub').textContent =
         `${m.images_missing_alt} of ${m.images_count} image${m.images_count !== 1 ? 's' : ''}`;
@@ -228,21 +305,31 @@
       altCard.classList.toggle('border-slate-200', !hasAltIssue);
       altCard.classList.toggle('bg-white',         !hasAltIssue);
 
-      // Headings
       document.getElementById('m-h1').textContent = m.header_counts.h1 ?? 0;
       document.getElementById('m-h2').textContent = m.header_counts.h2 ?? 0;
       document.getElementById('m-h3').textContent = m.header_counts.h3 ?? 0;
 
-      // Meta
       document.getElementById('m-meta-title').textContent = m.meta_title || '(not set)';
       document.getElementById('m-meta-desc').textContent  = m.meta_description || '(not set)';
 
+      show('results');
+      show('ai-separator');
+      show('insights-section');
+    }
+
+    // Legacy — still used by the existing /audit endpoint
+    function renderResults(data) {
+      renderMetrics(data);
       if (data.analysis) {
+        hide('ai-loading');
         renderInsights(data.analysis.insights);
         renderRecommendations(data.analysis.recommendations);
       }
+    }
 
-      show('results');
+    function showAiError(msg) {
+      document.getElementById('ai-error-text').textContent = msg;
+      show('ai-error');
     }
 
     function renderInsights(insights) {
@@ -259,8 +346,6 @@
         `;
         grid.appendChild(card);
       }
-
-      show('insights-section');
     }
 
     function renderRecommendations(recs) {
