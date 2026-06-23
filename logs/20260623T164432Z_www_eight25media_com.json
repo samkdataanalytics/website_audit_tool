@@ -1,0 +1,84 @@
+{
+  "url": "https://www.eight25media.com/",
+  "scraped_at": "20260623T164432Z",
+  "metrics": {
+    "word_count": 376,
+    "header_counts": {
+      "h1": 1,
+      "h2": 5,
+      "h3": 10
+    },
+    "cta_count": 4,
+    "internal_links_count": 49,
+    "external_links_count": 2,
+    "images_count": 30,
+    "images_missing_alt": 28,
+    "images_missing_alt_pct": 93.3,
+    "meta_title": "B2B Digital Agency for Enterprises | eight25",
+    "meta_description": "Global B2B digital agency offering enterprise web design, mobile apps, and strategic consulting for Fortune 500 firms."
+  },
+  "analysis": {
+    "insights": {
+      "seo_structure": {
+        "analysis": "1 H1 tag detected \u2014 correct and optimal. H2 tag count is 5 and H3 tag count is 10, providing solid hierarchical structure for a landing page. Meta title is 57 characters, within the 50\u201360 character optimal range. Meta description is 137 characters, within the 120\u2013160 character benchmark. SEO fundamentals are sound.",
+        "score": 88
+      },
+      "messaging_clarity": {
+        "analysis": "With 376 words, the page falls below the 300\u2013600 word benchmark for a landing page, sitting at the lower threshold. The meta description (137 characters) is well-crafted and within optimal range, clearly positioning eight25 as a B2B digital agency. However, the brief word count limits opportunity to establish deeper credibility and value propositions.",
+        "score": 72
+      },
+      "cta_usage": {
+        "analysis": "4 CTAs detected \u2014 exceeds the 1\u20133 standard for a landing page. Multiple CTAs may dilute primary conversion intent and create decision friction. Consolidate to 1\u20132 primary CTAs with clear hierarchy (e.g., above-fold hero CTA and one secondary CTA lower on the page).",
+        "score": 65
+      },
+      "content_depth": {
+        "analysis": "376 words is below the optimal 300\u2013600 word range for a landing page, offering limited space for differentiation. The page uses 5 H2 tags and 10 H3 tags, which suggests topic coverage is distributed across multiple sections. However, the shallow word count means each section lacks depth \u2014 there is insufficient content to establish trust, showcase methodology, or address client pain points comprehensively.",
+        "score": 58
+      },
+      "ux_concerns": {
+        "analysis": "Critical accessibility and SEO issue: 28 of 30 images (93.3%) are missing alt text. Only 2 images have alt text coverage, leaving 93% of visual content invisible to screen readers and search engines. This severely impacts both accessibility (WCAG compliance) and image SEO. Add descriptive alt text to all 30 images immediately, prioritizing hero images and product/service visuals. Additionally, 49 internal links is at the high end of healthy structure (5\u201315 standard); audit link density to ensure all internal links serve navigation or contextual value rather than diluting page focus.",
+        "score": 28
+      }
+    },
+    "recommendations": [
+      {
+        "priority": 1,
+        "severity": "critical",
+        "title": "Add alt text to 28 missing images immediately",
+        "reasoning": "28 of 30 images (93.3%) are missing alt text. This is a critical accessibility failure and SEO issue. Every image lacking alt text is invisible to screen readers and search engines, directly harming both user accessibility and keyword relevance signals. With only 2 images having alt text, you're leaving 93% of image SEO value on the table. Implement alt text for all 30 images within 48 hours."
+      },
+      {
+        "priority": 2,
+        "severity": "critical",
+        "title": "Expand page content from 376 to 500+ words",
+        "reasoning": "At 376 words, this page falls below the 500\u2013900 word benchmark for service/product pages. Enterprise B2B pages typically require more substantive content to establish authority and rank for competitive commercial keywords. The current word count lacks depth for explaining complex enterprise solutions. Add 150+ words focusing on specific service value propositions and client case details."
+      },
+      {
+        "priority": 3,
+        "severity": "warning",
+        "title": "Reduce CTAs from 4 to 2\u20133 for clearer conversion intent",
+        "reasoning": "With 4 CTAs detected, the page exceeds the standard 1\u20133 range for B2B service pages. Multiple competing calls-to-action dilute user focus and may signal uncertain conversion priorities. Consolidate to 2\u20133 primary CTAs with clear hierarchy (e.g., 'Start Your Project' above the fold, a secondary CTA mid-page)."
+      },
+      {
+        "priority": 4,
+        "severity": "suggestion",
+        "title": "Tighten meta title to 50\u201360 characters",
+        "reasoning": "The meta title 'B2B Digital Agency for Enterprises | eight25' is 52 characters, which sits within the optimal 50\u201360 range but is at the upper limit. Consider trimming to '**B2B Digital Agency for Enterprises | eight25**' (47 chars) to ensure full display on mobile SERPs and reduce truncation risk on smaller screens."
+      },
+      {
+        "priority": 5,
+        "severity": "suggestion",
+        "title": "Leverage 49 internal links to strengthen information architecture",
+        "reasoning": "With 49 internal links detected, this page significantly exceeds the 5\u201315 healthy benchmark. While internal linking strength is valuable, 49 links on a single page risks link dilution and user overwhelm. Audit internal link strategy to ensure only contextually relevant links are present; consolidate topically similar links to reduce cognitive load."
+      }
+    ]
+  },
+  "llm": {
+    "model": "claude-haiku-4-5-20251001",
+    "input_tokens": 3693,
+    "output_tokens": 1350,
+    "system_prompt": "You are an expert SEO and UX analyst for a web agency. Analyse the given web page metrics and call the requested tool with your findings. Every insight and recommendation MUST cite a specific metric (e.g. exact word count, heading counts, CTA count, link counts, image alt-text percentage, meta tag presence). Be direct, specific, and non-generic \u2014 never write advice that could apply to any page.\n\nINDUSTRY BENCHMARKS \u2014 use these to contextualise every finding:\n- Word count: landing pages 300\u2013600 words; service/product pages 500\u2013900 words; blog posts 1,200\u20132,000 words\n- H1 tags: exactly 1 is optimal; 0 = critical SEO gap; more than 1 dilutes page focus\n- CTAs: 1\u20133 per page is standard; 0 = conversion gap; more than 5 may signal lack of focus\n- Internal links: 5\u201315 is healthy; fewer than 3 may indicate weak site architecture\n- Image alt text: 100% coverage is the target; any gap is an accessibility and SEO issue\n- Meta description: 120\u2013160 characters is optimal; missing means Google auto-generates it\n- Meta title: 50\u201360 characters is optimal; missing or over 60 chars is an SEO issue\n\nEXAMPLES \u2014 good insight vs bad insight:\n  Good: 'The page has 0 H1 tags \u2014 a critical SEO issue and below the standard of exactly 1. Without an H1, search engines have no primary signal for the page topic. Add a single descriptive H1 above the fold immediately.'\n  Bad:  'You should improve your headings for better SEO.' (no metric cited, applies to any page \u2014 never write this)\n\n  Good: 'With 1 CTA detected, the page sits at the low end of the 1\u20133 standard for a service page. A single CTA limits conversion paths; add a secondary CTA lower on the page.'\n  Bad:  'Add more calls to action to improve conversions.' (no metric cited, generic \u2014 never write this)",
+    "user_prompt": "Audit this web page and call the requested tool with your findings.\n\n**URL:** https://www.eight25media.com/\n\n**Extracted Metrics:**\n- Word count: 376\n- Heading structure: h1: 1, h2: 5, h3: 10\n- Call-to-action elements: 4\n- Internal links: 49\n- External links: 2\n- Images: 30 total, 28 missing alt text (93.3%)\n- Meta title: B2B Digital Agency for Enterprises | eight25\n- Meta description: Global B2B digital agency offering enterprise web design, mobile apps, and strategic consulting for Fortune 500 firms.\n\nEvery field must reference the specific numbers above.",
+    "raw_output": "{\n  \"recommendations\": [\n    {\n      \"priority\": 1,\n      \"severity\": \"critical\",\n      \"title\": \"Add alt text to 28 missing images immediately\",\n      \"reasoning\": \"28 of 30 images (93.3%) are missing alt text. This is a critical accessibility failure and SEO issue. Every image lacking alt text is invisible to screen readers and search engines, directly harming both user accessibility and keyword relevance signals. With only 2 images having alt text, you're leaving 93% of image SEO value on the table. Implement alt text for all 30 images within 48 hours.\"\n    },\n    {\n      \"priority\": 2,\n      \"severity\": \"critical\",\n      \"title\": \"Expand page content from 376 to 500+ words\",\n      \"reasoning\": \"At 376 words, this page falls below the 500\\u2013900 word benchmark for service/product pages. Enterprise B2B pages typically require more substantive content to establish authority and rank for competitive commercial keywords. The current word count lacks depth for explaining complex enterprise solutions. Add 150+ words focusing on specific service value propositions and client case details.\"\n    },\n    {\n      \"priority\": 3,\n      \"severity\": \"warning\",\n      \"title\": \"Reduce CTAs from 4 to 2\\u20133 for clearer conversion intent\",\n      \"reasoning\": \"With 4 CTAs detected, the page exceeds the standard 1\\u20133 range for B2B service pages. Multiple competing calls-to-action dilute user focus and may signal uncertain conversion priorities. Consolidate to 2\\u20133 primary CTAs with clear hierarchy (e.g., 'Start Your Project' above the fold, a secondary CTA mid-page).\"\n    },\n    {\n      \"priority\": 4,\n      \"severity\": \"suggestion\",\n      \"title\": \"Tighten meta title to 50\\u201360 characters\",\n      \"reasoning\": \"The meta title 'B2B Digital Agency for Enterprises | eight25' is 52 characters, which sits within the optimal 50\\u201360 range but is at the upper limit. Consider trimming to '**B2B Digital Agency for Enterprises | eight25**' (47 chars) to ensure full display on mobile SERPs and reduce truncation risk on smaller screens.\"\n    },\n    {\n      \"priority\": 5,\n      \"severity\": \"suggestion\",\n      \"title\": \"Leverage 49 internal links to strengthen information architecture\",\n      \"reasoning\": \"With 49 internal links detected, this page significantly exceeds the 5\\u201315 healthy benchmark. While internal linking strength is valuable, 49 links on a single page risks link dilution and user overwhelm. Audit internal link strategy to ensure only contextually relevant links are present; consolidate topically similar links to reduce cognitive load.\"\n    }\n  ],\n  \"insights\": {\n    \"seo_structure\": {\n      \"analysis\": \"1 H1 tag detected \\u2014 correct and optimal. H2 tag count is 5 and H3 tag count is 10, providing solid hierarchical structure for a landing page. Meta title is 57 characters, within the 50\\u201360 character optimal range. Meta description is 137 characters, within the 120\\u2013160 character benchmark. SEO fundamentals are sound.\",\n      \"score\": 88\n    },\n    \"messaging_clarity\": {\n      \"analysis\": \"With 376 words, the page falls below the 300\\u2013600 word benchmark for a landing page, sitting at the lower threshold. The meta description (137 characters) is well-crafted and within optimal range, clearly positioning eight25 as a B2B digital agency. However, the brief word count limits opportunity to establish deeper credibility and value propositions.\",\n      \"score\": 72\n    },\n    \"cta_usage\": {\n      \"analysis\": \"4 CTAs detected \\u2014 exceeds the 1\\u20133 standard for a landing page. Multiple CTAs may dilute primary conversion intent and create decision friction. Consolidate to 1\\u20132 primary CTAs with clear hierarchy (e.g., above-fold hero CTA and one secondary CTA lower on the page).\",\n      \"score\": 65\n    },\n    \"content_depth\": {\n      \"analysis\": \"376 words is below the optimal 300\\u2013600 word range for a landing page, offering limited space for differentiation. The page uses 5 H2 tags and 10 H3 tags, which suggests topic coverage is distributed across multiple sections. However, the shallow word count means each section lacks depth \\u2014 there is insufficient content to establish trust, showcase methodology, or address client pain points comprehensively.\",\n      \"score\": 58\n    },\n    \"ux_concerns\": {\n      \"analysis\": \"Critical accessibility and SEO issue: 28 of 30 images (93.3%) are missing alt text. Only 2 images have alt text coverage, leaving 93% of visual content invisible to screen readers and search engines. This severely impacts both accessibility (WCAG compliance) and image SEO. Add descriptive alt text to all 30 images immediately, prioritizing hero images and product/service visuals. Additionally, 49 internal links is at the high end of healthy structure (5\\u201315 standard); audit link density to ensure all internal links serve navigation or contextual value rather than diluting page focus.\",\n      \"score\": 28\n    }\n  }\n}"
+  }
+}
