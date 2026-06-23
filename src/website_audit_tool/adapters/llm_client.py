@@ -23,7 +23,7 @@ class AnthropicClient:
 
     def __init__(self, api_key: str, model: str = "claude-haiku-4-5-20251001") -> None:
         self._model = model
-        self._client = anthropic.Anthropic(api_key=api_key)
+        self._client = anthropic.Anthropic(api_key=api_key, max_retries=3)
 
     def analyze(self, metrics: PageMetrics) -> tuple[AnalysisResult, LLMInteraction]:
         """Generate structured SEO/UX insights for the given page metrics.
