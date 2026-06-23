@@ -21,7 +21,7 @@ _SYSTEM_PROMPT = (
 class AnthropicClient:
     """Sends page metrics to the Anthropic API and returns a structured AnalysisResult."""
 
-    def __init__(self, api_key: str, model: str = "claude-opus-4-8") -> None:
+    def __init__(self, api_key: str, model: str = "claude-haiku-4-5-20251001") -> None:
         self._model = model
         self._client = anthropic.Anthropic(api_key=api_key)
 
