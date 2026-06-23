@@ -9,6 +9,7 @@ import sys
 
 from dotenv import load_dotenv
 
+from website_audit_tool.adapters.github_storage import GitHubStorage
 from website_audit_tool.adapters.llm_client import AnthropicClient
 from website_audit_tool.adapters.scraper import PageScraper, ScraperError
 from website_audit_tool.use_cases.audit_page import AuditPageUseCase
@@ -47,9 +48,13 @@ def main() -> None:
             "ANTHROPIC_API_KEY is not set — LLM analysis will raise NotImplementedError"
         )
 
+    gh_token = os.getenv("GITHUB_TOKEN", "")
+    gh_repo = os.getenv("GITHUB_REPO", "")
+    github = GitHubStorage(token=gh_token, repo=gh_repo) if gh_token and gh_repo else None
+
     scraper = PageScraper(timeout=args.timeout)
     llm_client = AnthropicClient(api_key=api_key)
-    use_case = AuditPageUseCase(scraper=scraper, llm_client=llm_client)
+    use_case = AuditPageUseCase(scraper=scraper, llm_client=llm_client, github_storage=github)
 
     try:
         result = use_case.execute(args.url)
