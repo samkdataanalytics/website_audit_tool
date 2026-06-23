@@ -81,15 +81,15 @@ def main() -> None:
 
     print("\n=== Insights ===")
     ins = a.insights
-    print(f"\n[SEO Structure]\n{ins.seo_structure}")
-    print(f"\n[Messaging Clarity]\n{ins.messaging_clarity}")
-    print(f"\n[CTA Usage]\n{ins.cta_usage}")
-    print(f"\n[Content Depth]\n{ins.content_depth}")
-    print(f"\n[UX Concerns]\n{ins.ux_concerns}")
+    print(f"\n[SEO Structure] Score: {ins.seo_structure.score}/100\n{ins.seo_structure.analysis}")
+    print(f"\n[Messaging Clarity] Score: {ins.messaging_clarity.score}/100\n{ins.messaging_clarity.analysis}")
+    print(f"\n[CTA Usage] Score: {ins.cta_usage.score}/100\n{ins.cta_usage.analysis}")
+    print(f"\n[Content Depth] Score: {ins.content_depth.score}/100\n{ins.content_depth.analysis}")
+    print(f"\n[UX Concerns] Score: {ins.ux_concerns.score}/100\n{ins.ux_concerns.analysis}")
 
     print("\n=== Recommendations ===")
     for rec in sorted(a.recommendations, key=lambda r: r.priority):
-        print(f"\n{rec.priority}. {rec.title}")
+        print(f"\n{rec.priority}. [{rec.severity.value.upper()}] {rec.title}")
         print(f"   {rec.reasoning}")
 
     print(f"\nScraped data : {result.scraped_data_path}")

@@ -10,13 +10,13 @@ from bs4 import BeautifulSoup
 
 from website_audit_tool.core.models import PageMetrics
 
-# Keywords that typically signal a call-to-action anchor
+# Keywords that typically signal a call-to-action element
 _CTA_KEYWORDS: frozenset[str] = frozenset(
     {
         "buy", "shop", "order", "get", "start", "sign up", "signup",
         "register", "subscribe", "download", "try", "learn more",
         "contact", "book", "schedule", "request", "join", "apply",
-        "claim", "get started", "free trial",
+        "claim", "get started", "free trial", "submit", "send", "continue",
     }
 )
 
@@ -106,10 +106,25 @@ class PageScraper:
     @staticmethod
     def _count_ctas(soup: BeautifulSoup) -> int:
         count = 0
+        # Anchor links with CTA keywords
         for tag in soup.find_all("a"):
             text = tag.get_text(separator=" ").strip().lower()
             if any(kw in text for kw in _CTA_KEYWORDS):
                 count += 1
+        # Button elements with CTA keywords in their text
+        for tag in soup.find_all("button"):
+            text = tag.get_text(separator=" ").strip().lower()
+            if any(kw in text for kw in _CTA_KEYWORDS):
+                count += 1
+        # Form inputs: submit/image are always CTAs; button type checked against keywords
+        for tag in soup.find_all("input"):
+            input_type = str(tag.get("type") or "").strip().lower()
+            if input_type in ("submit", "image"):
+                count += 1
+            elif input_type == "button":
+                value = str(tag.get("value") or "").strip().lower()
+                if any(kw in value for kw in _CTA_KEYWORDS):
+                    count += 1
         return count
 
     @staticmethod

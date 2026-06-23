@@ -62,7 +62,8 @@ The project follows **Clean Architecture** — each layer knows only about the l
   ║  requests + BS4  ║   AuditResult   (dataclass, no I/O)       ║
   ║                  ║   LLMInteraction(dataclass, no I/O)       ║
   ║  AnthropicClient ║   AnalysisResult(Pydantic — tool schema)  ║
-  ║  claude-haiku    ║   InsightSections                         ║
+  ║  claude-haiku-   ║   InsightSections                         ║
+  ║  4-5-20251001    ║   InsightSection  (analysis + score)      ║
   ║                  ║   Recommendation                          ║
   ║  GitHubStorage   ║                                           ║
   ║  Contents API    ║                                           ║
@@ -175,26 +176,29 @@ Full LLM audit trail — everything the model received and returned.
   "scraped_at": "20260623T120000Z",
   "metrics": { "...": "same numeric fields as above" },
   "analysis": {
-    "insights": {
-      "seo_structure":     "The page has 1 H1 and 6 H2 tags…",
-      "messaging_clarity": "The meta description at 23 words…",
-      "cta_usage":         "With only 3 CTAs detected…",
-      "content_depth":     "1 204 words is above average…",
-      "ux_concerns":       "2 of 14 images (14.3%) lack alt text…"
-    },
     "recommendations": [
-      { "priority": 1, "title": "Add alt text to 2 images",
+      { "priority": 1, "severity": "critical", "title": "Add alt text to 2 images",
         "reasoning": "14.3% of images have no alt attribute…" },
-      "..."
-    ]
+      { "priority": 2, "severity": "warning",  "title": "Add meta description",
+        "reasoning": "Meta description not set — Google will auto-generate…" },
+      { "priority": 3, "severity": "suggestion", "title": "Add a second CTA",
+        "reasoning": "Only 3 CTAs detected; 1–3 is standard but a secondary…" }
+    ],
+    "insights": {
+      "seo_structure":     { "analysis": "The page has 1 H1 and 6 H2 tags…", "score": 72 },
+      "messaging_clarity": { "analysis": "The meta description at 23 words…", "score": 58 },
+      "cta_usage":         { "analysis": "With only 3 CTAs detected…",        "score": 65 },
+      "content_depth":     { "analysis": "1 204 words is above average…",     "score": 80 },
+      "ux_concerns":       { "analysis": "2 of 14 images (14.3%) lack alt…",  "score": 28 }
+    }
   },
   "llm": {
     "model": "claude-haiku-4-5-20251001",
-    "input_tokens": 541,
-    "output_tokens": 312,
-    "system_prompt": "You are an expert SEO and UX analyst…",
+    "input_tokens": 741,
+    "output_tokens": 498,
+    "system_prompt": "You are an expert SEO and UX analyst for a web agency…",
     "user_prompt": "Audit this web page. Call `submit_analysis`…",
-    "raw_output": "{ \"insights\": { ... }, \"recommendations\": [ ... ] }"
+    "raw_output": "{ \"recommendations\": [ ... ], \"insights\": { ... } }"
   }
 }
 ```
@@ -254,24 +258,32 @@ The LLM is never asked for free text. It is forced to call a tool with a strict 
   AnthropicClient
        │
        │  tool_choice = { "type": "tool", "name": "submit_analysis" }
+       │  input_schema = _inline_refs(AnalysisResult.model_json_schema())
+       │                 ↳ all $ref/$defs resolved — flat, self-contained schema
        │
        ▼
-  AnalysisResult  (Pydantic model used directly as tool input_schema)
+  AnalysisResult  (Pydantic model → JSON schema → tool input_schema)
        │
-       ├── insights: InsightSections
-       │       ├── seo_structure      (must cite H-tag counts, meta tags)
-       │       ├── messaging_clarity  (must cite word count, meta description)
-       │       ├── cta_usage          (must cite exact CTA count)
-       │       ├── content_depth      (must cite word count, heading structure)
-       │       └── ux_concerns        (must cite link counts, alt-text gaps)
+       ├── recommendations: list[Recommendation]  (3–5 items, generated FIRST)
+       │       ├── priority   int   (1 = highest)
+       │       ├── severity   str   ("critical" | "warning" | "suggestion")
+       │       ├── title      str   (≤ 10 words)
+       │       └── reasoning  str   (must cite at least one metric number)
        │
-       └── recommendations: list[Recommendation]  (3–5 items)
-               ├── priority   int  (1 = highest)
-               ├── title      str  (≤ 10 words)
-               └── reasoning  str  (must cite at least one metric number)
+       └── insights: InsightSections
+               ├── seo_structure      InsightSection  (analysis: str, score: 0–100)
+               ├── messaging_clarity  InsightSection  (analysis: str, score: 0–100)
+               ├── cta_usage          InsightSection  (analysis: str, score: 0–100)
+               ├── content_depth      InsightSection  (analysis: str, score: 0–100)
+               └── ux_concerns        InsightSection  (analysis: str, score: 0–100)
 ```
 
-Each field description in the Pydantic model instructs the AI to cite specific numbers — the schema doubles as a prompt reinforcement mechanism.
+**Key design details:**
+
+- Each `InsightSection.score` uses the same 0–100 scale (0–39 poor, 40–69 fair, 70–89 good, 90–100 excellent), letting the UI render an at-a-glance verdict alongside the text analysis.
+- `recommendations` is ordered first in the schema so the model generates it before the larger `insights` object — preventing early truncation on smaller models.
+- `_inline_refs()` resolves all Pydantic-generated `$defs`/`$ref` cross-references before sending the schema to the API, ensuring the model sees every field inline with no indirection.
+- Each field `description` in the Pydantic model doubles as a prompt instruction — the schema enforces structure and guides output quality simultaneously.
 
 ---
 
@@ -375,9 +387,16 @@ All POST endpoints accept `{ "url": "https://..." }`.
 |---|---|
 | Clean Architecture layers | Scraper (deterministic, cheap) and LLM (probabilistic, costly) are fully decoupled. Each can be swapped or tested independently. |
 | Tool-use forced output | `tool_choice: { "type": "tool", "name": "submit_analysis" }` makes unstructured LLM responses architecturally impossible. Pydantic validates the result. |
-| Pydantic schema as prompt | Field `description` strings in `InsightSections` serve double duty — they define the JSON schema sent to the model AND instruct the model to cite specific numbers. |
+| Pydantic schema as prompt | Field `description` strings serve double duty — they define the JSON schema sent to the model AND instruct the model to cite specific metric numbers. |
+| `_inline_refs()` schema flattening | Pydantic generates schemas with `$defs`/`$ref` cross-references. Haiku reliably omits later fields when navigating nested refs. Inlining all refs produces a flat schema the model follows completely. |
+| `recommendations` field ordered first | In tool schemas, models generate fields in declaration order. Placing `recommendations` before `insights` ensures the shorter field is generated before the model's attention is consumed by five long insight texts. |
+| Per-category scores (0–100) | Each `InsightSection` carries a `score` alongside its `analysis` text. Scores give an at-a-glance signal without requiring the reader to parse every paragraph. The scale (0–39 poor → 90–100 excellent) is defined in the field description so the model applies it consistently. |
+| Severity tiers on recommendations | `critical` / `warning` / `suggestion` lets an agency immediately triage blockers from nice-to-haves without reading all reasoning text. The enum is enforced by the tool schema — the model cannot return an invalid value. |
+| Industry benchmarks in system prompt | Word count ranges, H1 rules, CTA and link counts, meta tag length standards are injected into the system prompt so insights say "below the 500–900 word standard" rather than just citing the raw number. |
+| Few-shot examples in system prompt | One good and one bad example of an insight are included to anchor Haiku against generic, uncited advice — especially important on edge-case pages with unusual metric profiles. |
+| CTA detection covers buttons and inputs | `_count_ctas` checks `<a>` (keyword match), `<button>` (keyword match), `<input type="submit/image">` (always a CTA), and `<input type="button">` (keyword match on `value`). Anchor-only detection missed the most common CTA pattern on modern pages. |
 | CTA detection via keywords | Deterministic heuristic over an ML classifier — fast, auditable, zero cost, tunable by editing `_CTA_KEYWORDS`. |
-| Parallel frontend requests | `/scrape` and `/analyse` fire simultaneously. Metrics render immediately; AI insights stream in without blocking the UI. |
+| Parallel frontend requests | `/scrape` and `/analyse` fire simultaneously. Metrics render immediately; AI insights load without blocking the UI. |
 | GitHub Contents API for logs | Serverless functions have no persistent filesystem. The GitHub API turns each audit run into a repo commit, making the audit trail permanent and publicly inspectable. |
 | GitHubStorage failures non-fatal | If the token or repo is misconfigured, the analysis still completes and falls back to `/tmp`. The error is logged but does not surface to the user. |
 
@@ -387,8 +406,24 @@ All POST endpoints accept `{ "url": "https://..." }`.
 
 | Trade-off | Decision |
 |---|---|
-| `claude-haiku` vs `claude-opus` | Haiku fits inside Vercel Hobby's 10s function timeout. Opus produces marginally richer prose but reliably times out. Switch by changing the default in `AnthropicClient.__init__`. |
+| `claude-haiku-4-5-20251001` vs `claude-opus-4-8` | Haiku fits inside Vercel Hobby's 10s function timeout. Opus produces richer reasoning but reliably times out on the free tier. Switch by passing `model="claude-opus-4-8"` to `AnthropicClient.__init__`. On a paid Vercel plan (300 s limit), Opus or Sonnet (`claude-sonnet-4-6`) are viable. |
 | `requests` (sync) vs `httpx` (async) | Sync is sufficient for a single-URL tool. Switch to `httpx` if batch auditing is added. |
 | `html.parser` vs `lxml` | stdlib parser used — no C dependency. Swap to `lxml` in `BeautifulSoup(html, "lxml")` for a ~3× speed improvement on large pages. |
 | File storage vs database | GitHub API commits are human-readable and require no extra infrastructure. A database (e.g. Supabase) would be needed for querying or pagination at scale. |
 | No auth on API endpoints | Acceptable for a demo tool. Rate-limiting or an API key header should be added before public exposure at scale. |
+
+---
+
+## What Would You Improve With More Time
+
+### 1. Persistent Audit Storage With Query Support
+
+Logs are committed to GitHub as flat JSON files, which is fine for a demo. Replacing `GitHubStorage` with a Supabase adapter (one concrete implementation behind the same interface) would enable querying audit history, comparing re-audits before and after fixes, and building a simple trend dashboard — without touching the use case or domain layers.
+
+### 2. Progress Monitoring Over Time
+
+Re-auditing the same URL on a schedule and tracking how metrics change would let agencies verify that implemented recommendations actually moved the needle. Each re-audit would be stored alongside previous runs, and the LLM would receive the current metrics plus the delta from the prior audit — e.g., "CTA count increased from 2 to 5, alt-text gaps closed from 4 to 0" — and generate a progress-aware insight: what improved, what is still outstanding, and what impact the changes likely had. This requires replacing flat-file storage with a queryable database (Supabase is a natural fit given the existing architecture).
+
+### 3. Competitor Comparison
+
+Accepting a second URL alongside the primary audit target and running the same scrape-and-analyse pipeline on both would let agencies benchmark a client's page directly against a competitor. The LLM would receive both sets of metrics and produce a side-by-side comparative insight — highlighting where the client leads, where they lag, and which gaps are worth closing first. The existing architecture already supports this cleanly: it is a second call to the same use case plus a new comparative insight field in `InsightSections`.
